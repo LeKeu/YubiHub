@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Mat03Main : MonoBehaviour
 {
+    public static string nomeMat03;
+
     [SerializeField] private Transform area;
     [SerializeField] Button butMemoria;
 
@@ -31,11 +34,13 @@ public class Mat03Main : MonoBehaviour
     {
         Numeros = Resources.LoadAll<Sprite>("Sprites/Numeros");
         Pontos = Resources.LoadAll<Sprite>("Sprites/Pontos");
+        AjustesBotoes();
         CriarBotoes();
     }
 
     private void Start()
     {
+        nomeMat03 = "Mat03";
         GameObject[] objects = GameObject.FindGameObjectsWithTag("ButMemoria");
         foreach (GameObject obj in objects)
         {
@@ -52,12 +57,23 @@ public class Mat03Main : MonoBehaviour
         int looper = buts.Count;
         int index = 0;
 
+        List<int> indexes = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        indexes = indexes.OrderBy(x => Random.value).ToList();
+
+        List<Sprite> auxNumList = new();
+        List<Sprite> auxPontosList = new();
+        foreach (int i in indexes)
+        {
+            auxNumList.Add(Numeros[i]);
+            auxPontosList.Add(Pontos[i]);
+        }
+
         for (int i = 0; i < looper; i++)
         {
             if (index % 2 == 0)
-                GamePuzzle.Add(Numeros[index]);
+                GamePuzzle.Add(auxNumList[index]);
             else
-                GamePuzzle.Add(Pontos[index-1]);
+                GamePuzzle.Add(auxPontosList[index - 1]);
             index++;
         }
     }
@@ -65,7 +81,7 @@ public class Mat03Main : MonoBehaviour
 
     void AddListeners()
     {
-        foreach(Button button in buts)
+        foreach (Button button in buts)
         {
             button.onClick.AddListener(() => EscolherBut());
         }
@@ -80,7 +96,7 @@ public class Mat03Main : MonoBehaviour
             firstGuessPuzzle = GamePuzzle[firstGuessIndex].name;
 
             buts[firstGuessIndex].image.sprite = GamePuzzle[firstGuessIndex];
-        }else if (!secondGuess)
+        } else if (!secondGuess)
         {
             secondGuess = true;
             secondGuessIndex = int.Parse(EventSystem.current.currentSelectedGameObject.name);
@@ -97,7 +113,7 @@ public class Mat03Main : MonoBehaviour
     IEnumerator ChecarSeIguais()
     {
         yield return new WaitForSeconds(1f);
-        if(firstGuessPuzzle == secondGuessPuzzle && firstGuessIndex != secondGuessIndex)
+        if (firstGuessPuzzle == secondGuessPuzzle && firstGuessIndex != secondGuessIndex)
         {
             yield return new WaitForSeconds(.5f);
 
@@ -111,7 +127,7 @@ public class Mat03Main : MonoBehaviour
         }
         else
         {
-            if(firstGuessIndex != secondGuessIndex)
+            if (firstGuessIndex != secondGuessIndex)
             {
                 yield return new WaitForSeconds(.5f);
 
@@ -127,11 +143,17 @@ public class Mat03Main : MonoBehaviour
     void ChecarSeAcabou()
     {
         countCorrectGuesses++;
-        Debug.Log($"countCorrectGuesses {countCorrectGuesses}");
-        Debug.Log($"gameGuesses {gameGuesses}");
-        Debug.Log($"countGuesses {countGuesses}");
         if (countCorrectGuesses == gameGuesses)
-            Debug.Log("demorou mas foi "+countGuesses);
+            StartCoroutine(Acabar());
+    }
+
+    IEnumerator Acabar()
+    {
+        string aux = $"{InfoJogador.nomeJogador}_{nomeMat03}_{Mat03Menu.dificuldade}";
+        if (PlayerPrefs.GetInt(aux)  == 0) { PlayerPrefs.SetInt(aux, 999); }
+        if (PlayerPrefs.GetInt(aux) > countGuesses)
+            PlayerPrefs.SetInt(aux, countGuesses);
+        yield return new WaitForSeconds(2); SceneManager.LoadScene("MatMenu03");
     }
 
     private void AjustesBotoes()
@@ -139,33 +161,22 @@ public class Mat03Main : MonoBehaviour
         switch (Mat03Menu.dificuldade)
         {
             case 0:
-                qntdBut = 10; linhas = 2; break;
+                qntdBut = 8; linhas = 2; break;
             case 1:
-                qntdBut = 14; linhas = 4; break;
+                qntdBut = 10; linhas = 2; break;
             case 2:
-                qntdBut = 20; linhas = 4; break;
+                qntdBut = 12; linhas = 4; break;
         }
         area.GetComponent<GridLayoutGroup>().constraintCount = linhas;
     }
 
     private void CriarBotoes()
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < qntdBut; i++)
         {
             Button but = Instantiate(butMemoria);
             but.name = i.ToString();
             but.transform.SetParent(area, false);
         }
-    }
-
-    private List<Image> AjusteImagens(List<Image> lista, List<int> pos)
-    {
-        List<Image> novaLista = new();
-
-        foreach (int index in pos) 
-        {
-            novaLista.Add(lista[index]);
-        }
-        return novaLista;
     }
 }

@@ -132,7 +132,7 @@ public class CriarPergunta : MonoBehaviour
     {
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
         { jogador.PerderVida(); }
-        else { jogador.GanharPontoMat01(); }
+        else { jogador.GanharPontoMat01(); inimigo.Morrer(); }
 
         if(JogadorMat01.vidas >= 0)
             StartCoroutine("GerarPergunta");

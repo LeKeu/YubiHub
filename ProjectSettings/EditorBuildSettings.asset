@@ -12,14 +12,20 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/MenuJogos.unity
     guid: 7ae667a402bb1bb4eb815eed08443ba0
   - enabled: 1
-    path: Assets/Scenes/Jogos/MatMenu01.unity
-    guid: bab088b2cdde6cd4b91b406233e6341b
-  - enabled: 1
     path: Assets/Scenes/Jogos/Mat01.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
+    path: Assets/Scenes/Jogos/MatMenu01.unity
+    guid: bab088b2cdde6cd4b91b406233e6341b
+  - enabled: 1
     path: Assets/Scenes/Profs/Cadastro.unity
     guid: 276d745f1ddb1e24bb7a3e89aaec7afa
+  - enabled: 1
+    path: Assets/Scenes/Jogos/Mat03.unity
+    guid: 5c138734f9a83834ab17d619ee537e35
+  - enabled: 1
+    path: Assets/Scenes/Jogos/MatMenu03.unity
+    guid: 9f259615d55872a41a901e371ce41706
   - enabled: 1
     path: Assets/Scenes/Jogos/Mat02.unity
     guid: 706701af64d76a145b6cf1a0e50c9cd9

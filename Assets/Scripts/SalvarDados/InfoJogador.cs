@@ -43,7 +43,8 @@ public class InfoJogador : MonoBehaviour
         DadosJogador = new List<string>()
         {
             $"{nomeApagar}_Mat01_0", $"{nomeApagar}_Mat01_1", $"{nomeApagar}_Mat01_2",
-            $"{nomeApagar}_Mat02"
+            $"{nomeApagar}_Mat02", 
+            $"{nomeApagar}_Mat03_0", $"{nomeApagar}_Mat03_1", $"{nomeApagar}_Mat03_2"
         };
 
         List<string> nomes = RetornarNomes();

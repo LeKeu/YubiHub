@@ -11,7 +11,7 @@ public class InimigoMat01 : MonoBehaviour
     {
         pos = gameObject.transform.position;
     }
-    public void Morrer() { Destroy(gameObject.transform.GetChild(0).gameObject); StartCoroutine("AparecerOutroInimigo"); }
+    public void Morrer() { Destroy(gameObject.transform.GetChild(0).gameObject); StartCoroutine(AparecerOutroInimigo()); }
 
     IEnumerator AparecerOutroInimigo() 
     {  
