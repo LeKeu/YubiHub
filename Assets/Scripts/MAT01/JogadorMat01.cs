@@ -20,8 +20,10 @@ public class JogadorMat01 : MonoBehaviour
 
     public void PerderVida() { coracoes[vidas].enabled = false; vidas--; if (vidas < 0) { StartCoroutine("Morrer"); } }
     IEnumerator Morrer() 
-    { 
-        if(PlayerPrefs.GetInt($"{InfoJogador.nomeJogador}_{nomeMat01}_{MatMenu.dificuldade}") < pontos)
+    {
+        PlayerPrefs.SetString($"{InfoJogador.nomeJogador}_{nomeMat01}_{MatMenu.dificuldade}_pontos", PlayerPrefs.GetString($"{InfoJogador.nomeJogador}_{nomeMat01}_{MatMenu.dificuldade}_pontos") + "_" + pontos.ToString());
+
+        if (PlayerPrefs.GetInt($"{InfoJogador.nomeJogador}_{nomeMat01}_{MatMenu.dificuldade}") < pontos)
             PlayerPrefs.SetInt($"{InfoJogador.nomeJogador}_{nomeMat01}_{MatMenu.dificuldade}", pontos);
         yield return new WaitForSeconds(2); SceneManager.LoadScene("MatMenu01"); }
 

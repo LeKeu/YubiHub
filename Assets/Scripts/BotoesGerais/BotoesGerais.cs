@@ -37,7 +37,6 @@ public class BotoesGerais : MonoBehaviour
 
     public void ChecarSenha(TMP_InputField senha)
     {
-        Debug.Log("-" + senha.text + "-");
         if (senha.text == "let") { SceneManager.LoadScene("ProfasMain"); }
     }
 

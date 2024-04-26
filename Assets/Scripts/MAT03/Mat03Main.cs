@@ -150,9 +150,14 @@ public class Mat03Main : MonoBehaviour
     IEnumerator Acabar()
     {
         string aux = $"{InfoJogador.nomeJogador}_{nomeMat03}_{Mat03Menu.dificuldade}";
+        string aux_pontos = $"{InfoJogador.nomeJogador}_{nomeMat03}_{Mat03Menu.dificuldade}_pontos";
+
         if (PlayerPrefs.GetInt(aux)  == 0) { PlayerPrefs.SetInt(aux, 999); }
-        if (PlayerPrefs.GetInt(aux) > countGuesses)
-            PlayerPrefs.SetInt(aux, countGuesses);
+
+        PlayerPrefs.SetString(aux_pontos, PlayerPrefs.GetString(aux_pontos) + "_" + countGuesses);
+
+        if (PlayerPrefs.GetInt(aux) > countGuesses) { PlayerPrefs.SetInt(aux, countGuesses); }
+
         yield return new WaitForSeconds(2); SceneManager.LoadScene("MatMenu03");
     }
 

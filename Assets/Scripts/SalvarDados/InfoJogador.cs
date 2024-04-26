@@ -12,7 +12,25 @@ public class InfoJogador : MonoBehaviour
     public static string nomeJogador;
     public static string nomeApagar;
     
-    private static List<string> DadosJogador;
+    public static List<string> DadosJogador;
+    public static List<string> JogadorScores;
+
+    private void Awake()
+    {
+        DadosJogador = new List<string>()
+        {
+            $"{nomeApagar}_Mat01_0", $"{nomeApagar}_Mat01_1", $"{nomeApagar}_Mat01_2",
+            $"{nomeApagar}_Mat02",
+            $"{nomeApagar}_Mat03_0", $"{nomeApagar}_Mat03_1", $"{nomeApagar}_Mat03_2"
+        };
+
+        JogadorScores = new List<string>()
+        {
+            $"{nomeJogador}_Mat01_0_pontos", $"{nomeJogador}_Mat01_1_pontos", $"{nomeJogador}_Mat01_2_pontos",
+            $"{nomeJogador}_Mat02_pontos",
+            $"{nomeJogador}_Mat03_0_pontos", $"{nomeJogador}_Mat03_1_pontos", $"{nomeJogador}_Mat03_2_pontos"
+        };
+    }
 
     void Start()
     {
@@ -40,13 +58,6 @@ public class InfoJogador : MonoBehaviour
 
     public void DeletarJogador()
     {
-        DadosJogador = new List<string>()
-        {
-            $"{nomeApagar}_Mat01_0", $"{nomeApagar}_Mat01_1", $"{nomeApagar}_Mat01_2",
-            $"{nomeApagar}_Mat02", 
-            $"{nomeApagar}_Mat03_0", $"{nomeApagar}_Mat03_1", $"{nomeApagar}_Mat03_2"
-        };
-
         List<string> nomes = RetornarNomes();
 
         for(int i = 0; i < nomes.Count; i++)
@@ -56,9 +67,7 @@ public class InfoJogador : MonoBehaviour
 
         foreach(string dado in DadosJogador) { PlayerPrefs.DeleteKey(dado); }
 
-        PrintarPalyerPrefs();
         AtualizarJogadores(nomes);
-        PrintarPalyerPrefs();
 
         SceneManager.LoadScene("Deletar");
     }
@@ -69,6 +78,14 @@ public class InfoJogador : MonoBehaviour
         nomes.AddRange(PlayerPrefs.GetString("Jogadores").Split(';'));
         nomes.RemoveAt(nomes.Count - 1);
         return nomes;
+    }
+
+    public static List<string> RetornarPontos(string parametro)
+    {
+        List<string> pontos = new();
+        pontos.AddRange(PlayerPrefs.GetString(parametro).Split('_'));
+        pontos.RemoveAt(0);
+        return pontos;
     }
 
     public void CriarBotoes()
@@ -89,7 +106,7 @@ public class InfoJogador : MonoBehaviour
         }
     }
 
-    public void PrintarPalyerPrefs()
+    public void PrintarPalyerPrefsNomes()
     {
         List<string> nomes = RetornarNomes();
         foreach(var aluno in nomes) 
@@ -103,6 +120,22 @@ public class InfoJogador : MonoBehaviour
             Debug.Log(dado);
             Debug.Log(PlayerPrefs.GetInt(dado));
             Debug.Log("=============");
+        }
+    }
+
+    public void PrintarPalyerPrefsScores()
+    {
+        Debug.Log(JogadorScores.Count);
+        foreach(var p in JogadorScores)
+        {
+            Debug.Log("p--> "+p);
+            List<string> scores = RetornarPontos(p);
+            Debug.Log("scores-->"+scores);
+            foreach (var aluno in scores)
+            {
+                Debug.Log(aluno);
+            }
+            Debug.Log("||||||||||||||||||||||||||||||||||||");
         }
     }
 }

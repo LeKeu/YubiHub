@@ -20,29 +20,80 @@ using CodeMonkey.Utils;
 public class Window_Graph : MonoBehaviour {
 
     [SerializeField] private Sprite circleSprite;
-    private RectTransform graphContainer;
-    private RectTransform labelTemplateX;
-    private RectTransform labelTemplateY;
-    private RectTransform dashTemplateX;
-    private RectTransform dashTemplateY;
-    private RectTransform dashes;
+    private GameObject[] graphContainer;
+    private GameObject[] labelTemplateX;
+    private GameObject[] labelTemplateY;
+    //private RectTransform dashTemplateX;
+    //private RectTransform dashTemplateY;
+    //private RectTransform dashes;
 
     private void Awake() {
-        graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
-        labelTemplateX = graphContainer.Find("LabelTemplateX").GetComponent<RectTransform>();
-        labelTemplateY = graphContainer.Find("LabelTemplateY").GetComponent<RectTransform>();
-        dashTemplateX = graphContainer.Find("DashTemplateX").GetComponent<RectTransform>();
-        dashTemplateY = graphContainer.Find("DashTemplateY").GetComponent<RectTransform>();
+        graphContainer = GameObject.FindGameObjectsWithTag("graphContainer");
+        labelTemplateX = GameObject.FindGameObjectsWithTag("LabelTemplateX");
+        labelTemplateY = GameObject.FindGameObjectsWithTag("LabelTemplateY");
 
-        dashes = graphContainer.Find("Dashes").GetComponent<RectTransform>();
-
-        List<int> valueList = new List<int>() { 5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37, 40, 36, 33 };
-        ShowGraph(valueList, (int _i) => "Vez "+(_i+1), (float _f) => "$" + Mathf.RoundToInt(_f));
+        EachGraph();
     }
 
-    private GameObject CreateCircle(Vector2 anchoredPosition) {
+    private void EachGraph()
+    {
+         
+        for(int i = 0; i < graphContainer.Length; i++)
+        {
+            RectTransform container = graphContainer[i].GetComponent<RectTransform>();
+            RectTransform labelX = labelTemplateX[i].GetComponent<RectTransform>();
+            RectTransform labelY = labelTemplateY[i].GetComponent<RectTransform>();
+
+            ShowGraph(InfoJogador.RetornarPontos(InfoJogador.JogadorScores[i]), container, labelX, labelY, (int _i) => "Vez " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
+        }
+    }
+
+    private void ShowGraph
+        (List<string> valueList, RectTransform graphContainer0, RectTransform labelTemplateX0, RectTransform labelTemplateY0,
+        Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
+        if (getAxisLabelX == null) {
+            getAxisLabelX = delegate (int _i) { return _i.ToString(); };
+        }
+        if (getAxisLabelY == null) {
+            getAxisLabelY = delegate (float _f) { return Mathf.RoundToInt(_f).ToString(); };
+        }
+
+        float graphHeight = graphContainer0.sizeDelta.y;
+        float yMaximum = 30f;
+        float xSize = 50f;
+
+        GameObject lastCircleGameObject = null;
+        for (int i = 0; i < valueList.Count; i++) {
+            float xPosition = xSize + i * xSize;
+            float yPosition = (int.Parse(valueList[i]) / yMaximum) * graphHeight;
+            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), graphContainer0);
+            if (lastCircleGameObject != null) {
+                CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphContainer0);
+            }
+            lastCircleGameObject = circleGameObject;
+
+            RectTransform labelX = Instantiate(labelTemplateX0);
+            labelX.SetParent(graphContainer0, false);
+            labelX.gameObject.SetActive(true);
+            labelX.anchoredPosition = new Vector2(xPosition, -7f);
+            labelX.GetComponent<Text>().text = getAxisLabelX(i);
+        }
+
+        int separatorCount = 10;
+        for (int i = 0; i <= separatorCount; i++) {
+            RectTransform labelY = Instantiate(labelTemplateY0);
+            labelY.SetParent(graphContainer0, false);
+            labelY.gameObject.SetActive(true);
+            float normalizedValue = i * 1f / separatorCount;
+            labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
+            labelY.GetComponent<Text>().text = getAxisLabelY(normalizedValue * yMaximum);
+        }
+    }
+
+    private GameObject CreateCircle(Vector2 anchoredPosition, RectTransform graphContainer0)
+    {
         GameObject gameObject = new GameObject("circle", typeof(Image));
-        gameObject.transform.SetParent(graphContainer, false);
+        gameObject.transform.SetParent(graphContainer0, false);
         gameObject.GetComponent<Image>().sprite = circleSprite;
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = anchoredPosition;
@@ -52,59 +103,9 @@ public class Window_Graph : MonoBehaviour {
         return gameObject;
     }
 
-    private void ShowGraph(List<int> valueList, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
-        if (getAxisLabelX == null) {
-            getAxisLabelX = delegate (int _i) { return _i.ToString(); };
-        }
-        if (getAxisLabelY == null) {
-            getAxisLabelY = delegate (float _f) { return Mathf.RoundToInt(_f).ToString(); };
-        }
-
-        float graphHeight = graphContainer.sizeDelta.y;
-        float yMaximum = 100f;
-        float xSize = 50f;
-
-        GameObject lastCircleGameObject = null;
-        for (int i = 0; i < valueList.Count; i++) {
-            float xPosition = xSize + i * xSize;
-            float yPosition = (valueList[i] / yMaximum) * graphHeight;
-            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition));
-            if (lastCircleGameObject != null) {
-                CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
-            }
-            lastCircleGameObject = circleGameObject;
-
-            RectTransform labelX = Instantiate(labelTemplateX);
-            labelX.SetParent(graphContainer, false);
-            labelX.gameObject.SetActive(true);
-            labelX.anchoredPosition = new Vector2(xPosition, -7f);
-            labelX.GetComponent<Text>().text = getAxisLabelX(i);
-            
-            RectTransform dashX = Instantiate(dashTemplateY);
-            dashX.SetParent(dashes, false);
-            dashX.gameObject.SetActive(true);
-            dashX.anchoredPosition = new Vector2(xPosition, -3f);
-        }
-
-        int separatorCount = 10;
-        for (int i = 0; i <= separatorCount; i++) {
-            RectTransform labelY = Instantiate(labelTemplateY);
-            labelY.SetParent(graphContainer, false);
-            labelY.gameObject.SetActive(true);
-            float normalizedValue = i * 1f / separatorCount;
-            labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
-            labelY.GetComponent<Text>().text = getAxisLabelY(normalizedValue * yMaximum);
-            
-            RectTransform dashY = Instantiate(dashTemplateX);
-            dashY.SetParent(dashes, false);
-            dashY.gameObject.SetActive(true);
-            dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
-        }
-    }
-
-    private void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB) {
+    private void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform container) {
         GameObject gameObject = new GameObject("dotConnection", typeof(Image));
-        gameObject.transform.SetParent(graphContainer, false);
+        gameObject.transform.SetParent(container, false);
         gameObject.GetComponent<Image>().color = new Color(1,1,1, .5f);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Vector2 dir = (dotPositionB - dotPositionA).normalized;
