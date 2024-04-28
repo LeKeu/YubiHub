@@ -19,38 +19,103 @@ using CodeMonkey.Utils;
 
 public class Window_Graph : MonoBehaviour {
 
-    [SerializeField] private Sprite circleSprite;
-    private GameObject[] graphContainer;
-    private GameObject[] labelTemplateX;
-    private GameObject[] labelTemplateY;
-    //private RectTransform dashTemplateX;
-    //private RectTransform dashTemplateY;
-    //private RectTransform dashes;
+    [SerializeField] private Sprite dotSprite;
+    private RectTransform graphContainer;
+    private RectTransform labelTemplateX;
+    private RectTransform labelTemplateY;
+    private RectTransform dashTemplateX;
+    private RectTransform dashTemplateY;
+    private List<GameObject> gameObjectList;
 
-    private void Awake() {
-        graphContainer = GameObject.FindGameObjectsWithTag("graphContainer");
-        labelTemplateX = GameObject.FindGameObjectsWithTag("LabelTemplateX");
-        labelTemplateY = GameObject.FindGameObjectsWithTag("LabelTemplateY");
+    // Cached values
+    private List<int> valueList;
+    private IGraphVisual graphVisual;
+    private int maxVisibleValueAmount;
+    private Func<int, string> getAxisLabelX;
+    private Func<float, string> getAxisLabelY;
 
-        EachGraph();
-    }
-
-    private void EachGraph()
+    public void CriarGrafico(string parametro)
     {
-         
-        for(int i = 0; i < graphContainer.Length; i++)
-        {
-            RectTransform container = graphContainer[i].GetComponent<RectTransform>();
-            RectTransform labelX = labelTemplateX[i].GetComponent<RectTransform>();
-            RectTransform labelY = labelTemplateY[i].GetComponent<RectTransform>();
+        // Grab base objects references
+        graphContainer = GameObject.FindGameObjectWithTag("graphContainer").GetComponent<RectTransform>();
+        labelTemplateX = GameObject.FindGameObjectWithTag("LabelTemplateX").GetComponent<RectTransform>();
+        labelTemplateY = GameObject.FindGameObjectWithTag("LabelTemplateY").GetComponent<RectTransform>();
+        //dashTemplateX = GameObject.FindGameObjectWithTag("dashTemplateX").GetComponent<RectTransform>();
+        //dashTemplateY = GameObject.FindGameObjectWithTag("dashTemplateY").GetComponent<RectTransform>();
 
-            ShowGraph(InfoJogador.RetornarPontos(InfoJogador.JogadorScores[i]), container, labelX, labelY, (int _i) => "Vez " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
-        }
+        gameObjectList = new List<GameObject>();
+
+        List<int> valueList = new List<int>() { 5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37, 40, 36, 33 };
+        List<int> pontos = InfoJogador.RetornarPontos(parametro);
+        Debug.Log(pontos.Count);
+
+        IGraphVisual lineGraphVisual = new LineGraphVisual(graphContainer, dotSprite, Color.green, new Color(1, 1, 1, .5f));
+        IGraphVisual barChartVisual = new BarChartVisual(graphContainer, Color.white, .8f);
+        ShowGraph(pontos, barChartVisual, -1, (int _i) => "Day " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
+
+        GameObject.FindGameObjectWithTag("barChartBtn").GetComponent<Button_UI>().ClickFunc = () => {
+            SetGraphVisual(barChartVisual);
+        };
+        GameObject.FindGameObjectWithTag("lineGraphBtn").GetComponent<Button_UI>().ClickFunc = () => {
+            SetGraphVisual(lineGraphVisual);
+        };
+
+        GameObject.FindGameObjectWithTag("decreaseVisibleAmountBtn").GetComponent<Button_UI>().ClickFunc = () => {
+            DecreaseVisibleAmount();
+        };
+        GameObject.FindGameObjectWithTag("increaseVisibleAmountBtn").GetComponent<Button_UI>().ClickFunc = () => {
+            IncreaseVisibleAmount();
+        };
     }
 
-    private void ShowGraph
-        (List<string> valueList, RectTransform graphContainer0, RectTransform labelTemplateX0, RectTransform labelTemplateY0,
-        Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
+    public void AtualizarCrianca()
+    {
+        Debug.Log(InfoJogador.nomeGrafico);
+    }
+
+    private void SetGetAxisLabelX(Func<int, string> getAxisLabelX) {
+        ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount, getAxisLabelX, this.getAxisLabelY);
+    }
+
+    private void SetGetAxisLabelY(Func<float, string> getAxisLabelY) {
+        ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount, this.getAxisLabelX, getAxisLabelY);
+    }
+
+    private void IncreaseVisibleAmount() {
+        ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount + 1, this.getAxisLabelX, this.getAxisLabelY);
+    }
+
+    private void DecreaseVisibleAmount() {
+        ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount - 1, this.getAxisLabelX, this.getAxisLabelY);
+    }
+
+    private void SetGraphVisual(IGraphVisual graphVisual) {
+        ShowGraph(this.valueList, graphVisual, this.maxVisibleValueAmount, this.getAxisLabelX, this.getAxisLabelY);
+    }
+
+    private void ClearGraph()
+    {
+
+    }
+
+    private void ShowGraph(List<int> valueList, IGraphVisual graphVisual, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
+        this.valueList = valueList;
+        this.graphVisual = graphVisual;
+        this.getAxisLabelX = getAxisLabelX;
+        this.getAxisLabelY = getAxisLabelY;
+
+        if (maxVisibleValueAmount <= 0) {
+            // Show all if no amount specified
+            maxVisibleValueAmount = valueList.Count;
+        }
+        if (maxVisibleValueAmount > valueList.Count) {
+            // Validate the amount to show the maximum
+            maxVisibleValueAmount = valueList.Count;
+        }
+
+        this.maxVisibleValueAmount = maxVisibleValueAmount;
+
+        // Test for label defaults
         if (getAxisLabelX == null) {
             getAxisLabelX = delegate (int _i) { return _i.ToString(); };
         }
@@ -58,63 +123,196 @@ public class Window_Graph : MonoBehaviour {
             getAxisLabelY = delegate (float _f) { return Mathf.RoundToInt(_f).ToString(); };
         }
 
-        float graphHeight = graphContainer0.sizeDelta.y;
-        float yMaximum = 30f;
-        float xSize = 50f;
+        // Clean up previous graph
+        foreach (GameObject gameObject in gameObjectList) {
+            Destroy(gameObject);
+        }
+        gameObjectList.Clear();
+        
+        // Grab the width and height from the container
+        float graphWidth = graphContainer.sizeDelta.x;
+        float graphHeight = graphContainer.sizeDelta.y;
 
-        GameObject lastCircleGameObject = null;
-        for (int i = 0; i < valueList.Count; i++) {
-            float xPosition = xSize + i * xSize;
-            float yPosition = (int.Parse(valueList[i]) / yMaximum) * graphHeight;
-            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), graphContainer0);
-            if (lastCircleGameObject != null) {
-                CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphContainer0);
+        // Identify y Min and Max values
+        float yMaximum = valueList[0];
+        float yMinimum = valueList[0];
+        
+        for (int i = Mathf.Max(valueList.Count - maxVisibleValueAmount, 0); i < valueList.Count; i++) {
+            int value = valueList[i];
+            if (value > yMaximum) {
+                yMaximum = value;
             }
-            lastCircleGameObject = circleGameObject;
+            if (value < yMinimum) {
+                yMinimum = value;
+            }
+        }
 
-            RectTransform labelX = Instantiate(labelTemplateX0);
-            labelX.SetParent(graphContainer0, false);
+        float yDifference = yMaximum - yMinimum;
+        if (yDifference <= 0) {
+            yDifference = 5f;
+        }
+        yMaximum = yMaximum + (yDifference * 0.2f);
+        yMinimum = yMinimum - (yDifference * 0.2f);
+
+        yMinimum = 0f; // Start the graph at zero
+
+        // Set the distance between each point on the graph 
+        float xSize = graphWidth / (maxVisibleValueAmount + 1);
+
+        // Cycle through all visible data points
+        int xIndex = 0;
+        for (int i = Mathf.Max(valueList.Count - maxVisibleValueAmount, 0); i < valueList.Count; i++) {
+            float xPosition = xSize + xIndex * xSize;
+            float yPosition = ((valueList[i] - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
+
+            // Add data point visual
+            gameObjectList.AddRange(graphVisual.AddGraphVisual(new Vector2(xPosition, yPosition), xSize));
+
+            // Duplicate the x label template
+            RectTransform labelX = Instantiate(labelTemplateX);
+            labelX.SetParent(graphContainer, false);
             labelX.gameObject.SetActive(true);
             labelX.anchoredPosition = new Vector2(xPosition, -7f);
             labelX.GetComponent<Text>().text = getAxisLabelX(i);
+            gameObjectList.Add(labelX.gameObject);
+            
+            // Duplicate the x dash template
+            //RectTransform dashX = Instantiate(dashTemplateX);
+            //dashX.SetParent(graphContainer, false);
+            //dashX.gameObject.SetActive(true);
+            //dashX.anchoredPosition = new Vector2(xPosition, -3f);
+            //gameObjectList.Add(dashX.gameObject);
+
+            xIndex++;
         }
 
+        // Set up separators on the y axis
         int separatorCount = 10;
         for (int i = 0; i <= separatorCount; i++) {
-            RectTransform labelY = Instantiate(labelTemplateY0);
-            labelY.SetParent(graphContainer0, false);
+            // Duplicate the label template
+            RectTransform labelY = Instantiate(labelTemplateY);
+            labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             float normalizedValue = i * 1f / separatorCount;
             labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
-            labelY.GetComponent<Text>().text = getAxisLabelY(normalizedValue * yMaximum);
+            labelY.GetComponent<Text>().text = getAxisLabelY(yMinimum + (normalizedValue * (yMaximum - yMinimum)));
+            gameObjectList.Add(labelY.gameObject);
+
+            // Duplicate the dash template
+            //RectTransform dashY = Instantiate(dashTemplateY);
+            //dashY.SetParent(graphContainer, false);
+            //dashY.gameObject.SetActive(true);
+            //dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
+            //gameObjectList.Add(dashY.gameObject);
         }
     }
 
-    private GameObject CreateCircle(Vector2 anchoredPosition, RectTransform graphContainer0)
-    {
-        GameObject gameObject = new GameObject("circle", typeof(Image));
-        gameObject.transform.SetParent(graphContainer0, false);
-        gameObject.GetComponent<Image>().sprite = circleSprite;
-        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-        rectTransform.anchoredPosition = anchoredPosition;
-        rectTransform.sizeDelta = new Vector2(11, 11);
-        rectTransform.anchorMin = new Vector2(0, 0);
-        rectTransform.anchorMax = new Vector2(0, 0);
-        return gameObject;
+
+
+    /*
+     * Interface definition for showing visual for a data point
+     * */
+    private interface IGraphVisual {
+
+        List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth);
+
     }
 
-    private void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform container) {
-        GameObject gameObject = new GameObject("dotConnection", typeof(Image));
-        gameObject.transform.SetParent(container, false);
-        gameObject.GetComponent<Image>().color = new Color(1,1,1, .5f);
-        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-        Vector2 dir = (dotPositionB - dotPositionA).normalized;
-        float distance = Vector2.Distance(dotPositionA, dotPositionB);
-        rectTransform.anchorMin = new Vector2(0, 0);
-        rectTransform.anchorMax = new Vector2(0, 0);
-        rectTransform.sizeDelta = new Vector2(distance, 3f);
-        rectTransform.anchoredPosition = dotPositionA + dir * distance * .5f;
-        rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(dir));
+
+    /*
+     * Displays data points as a Bar Chart
+     * */
+    private class BarChartVisual : IGraphVisual {
+
+        private RectTransform graphContainer;
+        private Color barColor;
+        private float barWidthMultiplier;
+
+        public BarChartVisual(RectTransform graphContainer, Color barColor, float barWidthMultiplier) {
+            this.graphContainer = graphContainer;
+            this.barColor = barColor;
+            this.barWidthMultiplier = barWidthMultiplier;
+        }
+
+        public List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth) {
+            GameObject barGameObject = CreateBar(graphPosition, graphPositionWidth);
+            return new List<GameObject>() { barGameObject };
+        }
+
+        private GameObject CreateBar(Vector2 graphPosition, float barWidth) {
+            GameObject gameObject = new GameObject("bar", typeof(Image));
+            gameObject.transform.SetParent(graphContainer, false);
+            gameObject.GetComponent<Image>().color = barColor;
+            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(graphPosition.x, 0f);
+            rectTransform.sizeDelta = new Vector2(barWidth * barWidthMultiplier, graphPosition.y);
+            rectTransform.anchorMin = new Vector2(0, 0);
+            rectTransform.anchorMax = new Vector2(0, 0);
+            rectTransform.pivot = new Vector2(.5f, 0f);
+            return gameObject;
+        }
+    }
+
+
+    /*
+     * Displays data points as a Line Graph
+     * */
+    private class LineGraphVisual : IGraphVisual {
+
+        private RectTransform graphContainer;
+        private Sprite dotSprite;
+        private GameObject lastDotGameObject;
+        private Color dotColor;
+        private Color dotConnectionColor;
+
+        public LineGraphVisual(RectTransform graphContainer, Sprite dotSprite, Color dotColor, Color dotConnectionColor) {
+            this.graphContainer = graphContainer;
+            this.dotSprite = dotSprite;
+            this.dotColor = dotColor;
+            this.dotConnectionColor = dotConnectionColor;
+            lastDotGameObject = null;
+        }
+
+
+        public List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth) {
+            List<GameObject> gameObjectList = new List<GameObject>();
+            GameObject dotGameObject = CreateDot(graphPosition);
+            gameObjectList.Add(dotGameObject);
+            if (lastDotGameObject != null) {
+                GameObject dotConnectionGameObject = CreateDotConnection(lastDotGameObject.GetComponent<RectTransform>().anchoredPosition, dotGameObject.GetComponent<RectTransform>().anchoredPosition);
+                gameObjectList.Add(dotConnectionGameObject);
+            }
+            lastDotGameObject = dotGameObject;
+            return gameObjectList;
+        }
+
+        private GameObject CreateDot(Vector2 anchoredPosition) {
+            GameObject gameObject = new GameObject("dot", typeof(Image));
+            gameObject.transform.SetParent(graphContainer, false);
+            gameObject.GetComponent<Image>().sprite = dotSprite;
+            gameObject.GetComponent<Image>().color = dotColor;
+            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.sizeDelta = new Vector2(11, 11);
+            rectTransform.anchorMin = new Vector2(0, 0);
+            rectTransform.anchorMax = new Vector2(0, 0);
+            return gameObject;
+        }
+
+        private GameObject CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB) {
+            GameObject gameObject = new GameObject("dotConnection", typeof(Image));
+            gameObject.transform.SetParent(graphContainer, false);
+            gameObject.GetComponent<Image>().color = dotConnectionColor;
+            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+            Vector2 dir = (dotPositionB - dotPositionA).normalized;
+            float distance = Vector2.Distance(dotPositionA, dotPositionB);
+            rectTransform.anchorMin = new Vector2(0, 0);
+            rectTransform.anchorMax = new Vector2(0, 0);
+            rectTransform.sizeDelta = new Vector2(distance, 3f);
+            rectTransform.anchoredPosition = dotPositionA + dir * distance * .5f;
+            rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(dir));
+            return gameObject;
+        }
     }
 
 }

@@ -34,7 +34,6 @@ public class Mat02Main : MonoBehaviour
         numeroPeixes = Random.Range(1, 11);
         yield return new WaitForSeconds(1.5f);
         RespostaBotoes(numeroPeixes);
-        Debug.Log(numeroPeixes);
         List<GameObject> posicoesNovas = Misturar(posicoes);
 
         for (int i = 0; i < numeroPeixes; i++)
@@ -68,7 +67,6 @@ public class Mat02Main : MonoBehaviour
         int numNovo = Random.Range(1, num);
         if(num != 1) 
         {
-            Debug.Log(num);
             while (numNovo == num)
             {
                 numNovo = Random.Range(1, num);

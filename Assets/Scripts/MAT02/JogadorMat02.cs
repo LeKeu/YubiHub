@@ -24,7 +24,13 @@ public class JogadorMat02 : MonoBehaviour
         string aux = $"{InfoJogador.nomeJogador}_{nomeMat02}";
         string aux_pontos = $"{InfoJogador.nomeJogador}_{nomeMat02}_pontos";
 
+        Debug.Log(aux_pontos);
+        if(PlayerPrefs.GetString(aux_pontos) == "_")
+            PlayerPrefs.SetString(aux_pontos, "_");
+
+        Debug.Log(">"+PlayerPrefs.GetString(aux_pontos));
         PlayerPrefs.SetString(aux_pontos, PlayerPrefs.GetString(aux_pontos) + "_" + pontos.ToString());
+        Debug.Log(">" + PlayerPrefs.GetString(aux_pontos));
 
         if (PlayerPrefs.GetInt(aux) < pontos)
             PlayerPrefs.SetInt(aux, pontos);

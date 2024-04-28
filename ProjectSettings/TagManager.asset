@@ -19,6 +19,12 @@ TagManager:
   - DashTemplateY
   - Dashes
   - graphContainer
+  - barChartBtn
+  - lineGraphBtn
+  - decreaseVisibleAmountBtn
+  - increaseVisibleAmountBtn
+  - WindowGraph
+  - PainelBotoesJogos
   layers:
   - Default
   - TransparentFX
