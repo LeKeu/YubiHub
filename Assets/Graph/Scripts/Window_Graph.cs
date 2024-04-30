@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using CodeMonkey.Utils;
+using TMPro;
+using Unity.VisualScripting;
 
 public class Window_Graph : MonoBehaviour {
 
@@ -34,8 +36,24 @@ public class Window_Graph : MonoBehaviour {
     private Func<int, string> getAxisLabelX;
     private Func<float, string> getAxisLabelY;
 
+    GameObject barChartBtn;
+    GameObject lineGraphBtn;
+    GameObject decreaseVisibleAmountBtn;
+    GameObject increaseVisibleAmountBtn;
+
+    private void Awake()
+    {
+        barChartBtn = GameObject.FindGameObjectWithTag("barChartBtn");
+        lineGraphBtn = GameObject.FindGameObjectWithTag("lineGraphBtn");
+        decreaseVisibleAmountBtn = GameObject.FindGameObjectWithTag("decreaseVisibleAmountBtn");
+        increaseVisibleAmountBtn = GameObject.FindGameObjectWithTag("increaseVisibleAmountBtn");
+
+        DesativarBotoes();
+    }
+
     public void CriarGrafico(string parametro)
     {
+        DesativarBotoes();
         // Grab base objects references
         graphContainer = GameObject.FindGameObjectWithTag("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = GameObject.FindGameObjectWithTag("LabelTemplateX").GetComponent<RectTransform>();
@@ -45,9 +63,11 @@ public class Window_Graph : MonoBehaviour {
 
         gameObjectList = new List<GameObject>();
 
-        List<int> valueList = new List<int>() { 5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37, 40, 36, 33 };
         List<int> pontos = InfoJogador.RetornarPontos(parametro);
-        Debug.Log(pontos.Count);
+
+        if (pontos.Count == 0)
+        { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = "nop"; DesativarBotoes(); return; }
+        else { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = ""; AtivarBotoes(); }
 
         IGraphVisual lineGraphVisual = new LineGraphVisual(graphContainer, dotSprite, Color.green, new Color(1, 1, 1, .5f));
         IGraphVisual barChartVisual = new BarChartVisual(graphContainer, Color.white, .8f);
@@ -68,9 +88,20 @@ public class Window_Graph : MonoBehaviour {
         };
     }
 
-    public void AtualizarCrianca()
+    public void DesativarBotoes()
     {
-        Debug.Log(InfoJogador.nomeGrafico);
+        barChartBtn.SetActive(false);
+        lineGraphBtn.SetActive(false);
+        decreaseVisibleAmountBtn.SetActive(false);
+        increaseVisibleAmountBtn.SetActive(false);
+    }
+
+    public void AtivarBotoes()
+    {
+        barChartBtn.SetActive(true);
+        lineGraphBtn.SetActive(true);
+        decreaseVisibleAmountBtn.SetActive(true);
+        increaseVisibleAmountBtn.SetActive(true);
     }
 
     private void SetGetAxisLabelX(Func<int, string> getAxisLabelX) {
@@ -93,9 +124,10 @@ public class Window_Graph : MonoBehaviour {
         ShowGraph(this.valueList, graphVisual, this.maxVisibleValueAmount, this.getAxisLabelX, this.getAxisLabelY);
     }
 
-    private void ClearGraph()
+    public void ClearGraph()
     {
-
+        GameObject[] apagar = GameObject.FindGameObjectsWithTag("Temp");
+        foreach(GameObject obj in apagar) { Destroy(obj); }
     }
 
     private void ShowGraph(List<int> valueList, IGraphVisual graphVisual, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
@@ -170,6 +202,7 @@ public class Window_Graph : MonoBehaviour {
 
             // Duplicate the x label template
             RectTransform labelX = Instantiate(labelTemplateX);
+            labelX.tag = "Temp";
             labelX.SetParent(graphContainer, false);
             labelX.gameObject.SetActive(true);
             labelX.anchoredPosition = new Vector2(xPosition, -7f);
@@ -191,6 +224,7 @@ public class Window_Graph : MonoBehaviour {
         for (int i = 0; i <= separatorCount; i++) {
             // Duplicate the label template
             RectTransform labelY = Instantiate(labelTemplateY);
+            labelY.tag = "Temp";
             labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             float normalizedValue = i * 1f / separatorCount;
@@ -241,6 +275,7 @@ public class Window_Graph : MonoBehaviour {
 
         private GameObject CreateBar(Vector2 graphPosition, float barWidth) {
             GameObject gameObject = new GameObject("bar", typeof(Image));
+            gameObject.tag = "Temp";
             gameObject.transform.SetParent(graphContainer, false);
             gameObject.GetComponent<Image>().color = barColor;
             RectTransform rectTransform = gameObject.GetComponent<RectTransform>();

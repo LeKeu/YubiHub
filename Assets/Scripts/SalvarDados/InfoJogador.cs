@@ -104,57 +104,24 @@ public class InfoJogador : MonoBehaviour
 
     public static List<int> RetornarPontos(string parametro)
     {
+        GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = "";
         parametro += "_pontos";
         List<string> pontos_aux = new();
         List<int> pontos = new();
-        Debug.Log(parametro);
+
         string pontosPlayerPrefs = PlayerPrefs.GetString(parametro);
+
         pontos_aux.AddRange(pontosPlayerPrefs.Split('_'));
         pontos_aux.RemoveAt(0);
-        try
-        {
-            for (int i = 0; i < pontos_aux.Count; i++)
-            { pontos.Add(int.Parse(pontos_aux[i])); }
-        }catch (Exception ex)
-        {
-            Debug.Log(ex);
-        }
+
+        for (int i = 0; i < pontos_aux.Count; i++)
+        { pontos.Add(int.Parse(pontos_aux[i])); }
+        
 
         return pontos;
     }
 
-    public static List<string> RetornarPontos2(string parametro)
-    {
-        string jogador = "";
-        string jogo = "";
-        string dificuldade = "";
-        string pontos = "pontos";
-
-        //foreach(string a in parametro.Split("_")) { Debug.Log(a); }
-        List<string> gente = new();
-        gente.AddRange(parametro.Split('_'));
-
-        string nossSenhora = "";
-
-        List<string> pontos_list = new();
-        if(gente.Count == 4) { nossSenhora = $"{gente[0]}_{gente[1]}_{gente[2]}_pontos"; }
-        else { nossSenhora = $"{gente[0]}_{gente[1]}_pontos"; }
-        Debug.Log(nossSenhora);
-        Debug.Log(PlayerPrefs.GetString(nossSenhora));
-        pontos_list.AddRange(PlayerPrefs.GetString(nossSenhora).Split("_"));
-        //Debug.Log(pontos_list.Count);
-        Debug.Log("sees​_Mat01_0_pontos");
-        Debug.Log(PlayerPrefs.GetString("sees​_Mat01_0_pontos"));
-        //string mds = "";
-
-        foreach (string letra in pontos_list) { Debug.Log(letra); }
-        //Debug.Log(mds);
-        //Debug.Log(PlayerPrefs.GetString($"{mds}"));
-        //pontos_list.AddRange(PlayerPrefs.GetString(parametro).Split('_'));
-        pontos_list.RemoveAt(0);
-        return pontos_list;
-    }
-
+    
     public void CriarBotoesNomesJogadores()
     {
         GameObject painelScroll = GameObject.FindGameObjectWithTag("PainelBotoes");
@@ -204,17 +171,6 @@ public class InfoJogador : MonoBehaviour
             Debug.Log(dado);
             Debug.Log(PlayerPrefs.GetInt(dado));
             Debug.Log("=============");
-        }
-    }
-
-    public void PrintarPalyerPrefsScores()
-    {
-        Debug.Log(JogadorScores.Count);
-        foreach(var p in JogadorScores)
-        {
-            //Debug.Log("p--> "+p);
-            List<string> scores = RetornarPontos2(p);
-            //Debug.Log("scores-->"+scores.Count);
         }
     }
     

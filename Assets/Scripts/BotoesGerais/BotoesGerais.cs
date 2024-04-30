@@ -76,12 +76,14 @@ public class BotoesGerais : MonoBehaviour
     public void SelecionarNomeGrafico() // nome do jogo
     {
         nomeJogoGrafico = EventSystem.current.currentSelectedGameObject.name;
+        windowGraph.ClearGraph();
         windowGraph.CriarGrafico($"{nomeJogadorGrafico}_{nomeJogoGrafico}");
     }
 
     public void SelecionarNomeJogador() // nome do jogador
     {
         nomeJogadorGrafico = EventSystem.current.currentSelectedGameObject.name;
+        windowGraph.ClearGraph();
         windowGraph.CriarGrafico($"{nomeJogadorGrafico}_{nomeJogoGrafico}");
     }
 }

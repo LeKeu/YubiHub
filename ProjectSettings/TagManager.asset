@@ -25,6 +25,7 @@ TagManager:
   - increaseVisibleAmountBtn
   - WindowGraph
   - PainelBotoesJogos
+  - Temp
   layers:
   - Default
   - TransparentFX
