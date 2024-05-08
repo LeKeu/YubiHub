@@ -2071,6 +2071,12 @@ MonoBehaviour:
   - {fileID: 827669655087543426, guid: a94f7d3f5392cfe4b9c8ef175031e7e1, type: 3}
   - {fileID: 827669655087543426, guid: c78d68c355ca6854d9f4c498d7e8c22a, type: 3}
   - {fileID: 827669655087543426, guid: 92f66df4aefaa624cbfab4ea1d94b4f6, type: 3}
+  - {fileID: 827669655087543426, guid: 92499a38cff2edb4b88c9b9203b3bc47, type: 3}
+  - {fileID: 827669655087543426, guid: f43709ac325256f45962b8b162a1e88b, type: 3}
+  - {fileID: 827669655087543426, guid: c7fac48b1bf9ef34283346b20d69d969, type: 3}
+  - {fileID: 827669655087543426, guid: e5a6806121788904d9d0b4abdd61e75f, type: 3}
+  - {fileID: 827669655087543426, guid: da906863e344b4345b026992fe22b8c7, type: 3}
+  - {fileID: 827669655087543426, guid: e5ae9c7966c089044a2033fe5ddcb5fa, type: 3}
   posicoes:
   - {fileID: 806857178}
   - {fileID: 1987770984}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8061076760898471653}
   - component: {fileID: 2368616285220543371}
   m_Layer: 0
-  m_Name: peixe 1
+  m_Name: peixe 6
   m_TagString: Peixes
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 022f955babb163d448062ccaa7113c51, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f4a4f78369bcca84baacd5b00d82d6d7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
