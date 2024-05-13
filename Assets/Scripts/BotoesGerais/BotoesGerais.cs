@@ -20,8 +20,8 @@ public class BotoesGerais : MonoBehaviour
         
         if (SceneManager.GetActiveScene().name == "ProfasMain")
             windowGraph = GameObject.FindGameObjectWithTag("WindowGraph").GetComponent<Window_Graph>();
-        if (SceneManager.GetActiveScene().name == "MenuJogos")
-        { GameObject.FindGameObjectWithTag("TextNomeJogador").GetComponent<TextMeshProUGUI>().text = $"{InfoJogador.nomeJogador} escolha seu jogo:"; }
+        //if (SceneManager.GetActiveScene().name == "MenuJogos")
+        //{ GameObject.FindGameObjectWithTag("TextNomeJogador").GetComponent<TextMeshProUGUI>().text = $"{InfoJogador.nomeJogador} escolha seu jogo:"; }
     }
     public void MatMenu() { SceneManager.LoadScene("MatMenu01"); }
     public void Menu(TextMeshProUGUI nome)
@@ -85,5 +85,10 @@ public class BotoesGerais : MonoBehaviour
         nomeJogadorGrafico = EventSystem.current.currentSelectedGameObject.name;
         windowGraph.ClearGraph();
         windowGraph.CriarGrafico($"{nomeJogadorGrafico}_{nomeJogoGrafico}");
+    }
+
+    public void SairJogo()
+    {
+        Application.Quit();
     }
 }

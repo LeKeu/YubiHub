@@ -6,9 +6,14 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using System.Linq;
+using Unity.Barracuda;
 
 public class CriarPergunta : MonoBehaviour
 {
+    [SerializeField] GameObject ModeloScript;
+    public static bool isModel;
+    int streak;
+
     [SerializeField] TextMeshProUGUI pergunta;
     [SerializeField] Button opc1;
     [SerializeField] Button opc2;
@@ -27,6 +32,7 @@ public class CriarPergunta : MonoBehaviour
 
     void Start()
     {
+        streak = 0;
         jogador = GameObject.FindGameObjectWithTag("Player").GetComponent<JogadorMat01>();
         inimigo = GameObject.FindGameObjectWithTag("Inimigo").GetComponent<InimigoMat01>();
         StartCoroutine("GerarPergunta");
@@ -92,9 +98,26 @@ public class CriarPergunta : MonoBehaviour
     private List<int> Operacoes()
     {
         List<int> dfc = new List<int>() { rangeFacil, rangeMedio, rangeDificil };
+        int limiteMax; int limiteMin;
 
-        int limiteMax = dfc[MatMenu.dificuldade];
-        int limiteMin = MatMenu.dificuldade == 0 ? 1 : dfc[MatMenu.dificuldade - 1];
+        if (isModel)
+        {
+            Model_Range_MAT01 mod = GameObject.FindGameObjectWithTag("Model").GetComponent<Model_Range_MAT01>();
+            
+            Debug.Log("streak --> " + streak);
+            Debug.Log(mod.name);
+            List<int> valoresModel = mod.ResultModel(15);
+            limiteMax = valoresModel[0];
+            limiteMin = valoresModel[1];
+            Debug.Log("limite max --> "+limiteMax);
+            Debug.Log("limite min --> " + limiteMin);
+        }
+        else
+        {
+            limiteMax = dfc[MatMenu.dificuldade];
+            limiteMin = MatMenu.dificuldade == 0 ? 1 : dfc[MatMenu.dificuldade - 1];
+        }
+        
         int operac = Random.Range(0, operacoes.Count);
         List<int> resp = new List<int>();
 
@@ -107,6 +130,11 @@ public class CriarPergunta : MonoBehaviour
         }
         return new List<int>() { resp[0], resp[1], resp[2], operac };
     }   // resp0 = resposta da op, resp1 num1, resp2 num2, operac op usada na conta
+
+    void LimitesModelo()
+    {
+
+    }
 
     private int NumRedor(int num)
     { // 0 menor, 1 maior
@@ -131,8 +159,8 @@ public class CriarPergunta : MonoBehaviour
     public void ChecarResposta()
     {
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
-        { jogador.PerderVida(); }
-        else { jogador.GanharPontoMat01(); inimigo.Morrer(); }
+        { jogador.PerderVida(); streak = 0; }
+        else { jogador.GanharPontoMat01(); inimigo.Morrer(); streak++; }
 
         if(JogadorMat01.vidas >= 0)
             StartCoroutine("GerarPergunta");

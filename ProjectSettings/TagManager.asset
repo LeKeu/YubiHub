@@ -26,6 +26,7 @@ TagManager:
   - WindowGraph
   - PainelBotoesJogos
   - Temp
+  - Model
   layers:
   - Default
   - TransparentFX

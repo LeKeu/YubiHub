@@ -22,6 +22,8 @@ public class InfoJogador : MonoBehaviour
     public static List<string> JogadorScores;
     public static List<string> NomesJogos;
 
+    private List<string> etcs = new List<string>() {";", ",", ".", "/", "?", "\\", "|", "[", "]", "{", "}" };
+
     private void Awake()
     {
         nomeGrafico = PlayerPrefs.GetString("Jogadores").Split(';')[0];
@@ -74,8 +76,33 @@ public class InfoJogador : MonoBehaviour
 
     public void AdicionarJogador(TextMeshProUGUI nome)
     {
+        List<string> nomesExistentes = RetornarNomes();
+
+        //if(string.IsNullOrWhiteSpace(nome.text.Trim())) StartCoroutine(AparecerTexto("status", "Preencha o campo com um nome.", 3f));
+
+        foreach (string n in nomesExistentes)
+        {
+            if (n == nome.text) { StartCoroutine(AparecerTexto("status", "Nome já existente! Cadastre outro.", 3f)); return; }
+        }
+        foreach (char n in nome.text)
+        {
+            if (etcs.Contains(n.ToString())){ StartCoroutine(AparecerTexto("status", "Nome contém caracter inválido! Cadastre outro.", 3f)); return; }
+        }
+
+        StartCoroutine(AparecerTexto("status", "Nome cadastrado com sucesso!", 3f));
         string jogadores = PlayerPrefs.GetString("Jogadores");
+
         PlayerPrefs.SetString("Jogadores", jogadores + nome.text + ";");
+    }
+
+    IEnumerator AparecerTexto(string nomeTexto, string mensagem, float segundos)
+    {
+        var obj = GameObject.Find(nomeTexto).GetComponent<TextMeshProUGUI>();
+        obj.text = "";
+        obj.text = mensagem;
+        yield return new WaitForSeconds(segundos);
+        obj.text = "";
+
     }
 
     public void DeletarJogador()
