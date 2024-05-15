@@ -22,6 +22,8 @@ using Unity.VisualScripting;
 public class Window_Graph : MonoBehaviour {
 
     [SerializeField] private Sprite dotSprite;
+    [SerializeField] private GameObject TextObj;
+
     private RectTransform graphContainer;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
@@ -66,13 +68,13 @@ public class Window_Graph : MonoBehaviour {
         List<int> pontos = InfoJogador.RetornarPontos(parametro);
 
         if (pontos.Count == 0)
-        { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = "nop"; DesativarBotoes(); return; }
+        { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = "Ainda não há dados nesse jogo."; DesativarBotoes(); return; }
         else { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = ""; AtivarBotoes(); }
 
         IGraphVisual lineGraphVisual = new LineGraphVisual(graphContainer, dotSprite, Color.green, new Color(1, 1, 1, .5f));
         IGraphVisual barChartVisual = new BarChartVisual(graphContainer, Color.white, .8f);
-        ShowGraph(pontos, barChartVisual, -1, (int _i) => "Day " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
-
+        ShowGraph(pontos, barChartVisual, -1, (int _i) => "" + ($"{pontos[_i]}"), (float _f) => "" + Mathf.RoundToInt(_f), TextObj);
+        //($"{_i+1}\n{pontos[_i]}")
         GameObject.FindGameObjectWithTag("barChartBtn").GetComponent<Button_UI>().ClickFunc = () => {
             SetGraphVisual(barChartVisual);
         };
@@ -104,14 +106,6 @@ public class Window_Graph : MonoBehaviour {
         increaseVisibleAmountBtn.SetActive(true);
     }
 
-    private void SetGetAxisLabelX(Func<int, string> getAxisLabelX) {
-        ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount, getAxisLabelX, this.getAxisLabelY);
-    }
-
-    private void SetGetAxisLabelY(Func<float, string> getAxisLabelY) {
-        ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount, this.getAxisLabelX, getAxisLabelY);
-    }
-
     private void IncreaseVisibleAmount() {
         ShowGraph(this.valueList, this.graphVisual, this.maxVisibleValueAmount + 1, this.getAxisLabelX, this.getAxisLabelY);
     }
@@ -130,7 +124,7 @@ public class Window_Graph : MonoBehaviour {
         foreach(GameObject obj in apagar) { Destroy(obj); }
     }
 
-    private void ShowGraph(List<int> valueList, IGraphVisual graphVisual, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
+    private void ShowGraph(List<int> valueList, IGraphVisual graphVisual, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null, GameObject textObj = null) {
         this.valueList = valueList;
         this.graphVisual = graphVisual;
         this.getAxisLabelX = getAxisLabelX;
@@ -198,7 +192,7 @@ public class Window_Graph : MonoBehaviour {
             float yPosition = ((valueList[i] - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
 
             // Add data point visual
-            gameObjectList.AddRange(graphVisual.AddGraphVisual(new Vector2(xPosition, yPosition), xSize));
+            gameObjectList.AddRange(graphVisual.AddGraphVisual(new Vector2(xPosition, yPosition), xSize, valueList, i, textObj));
 
             // Duplicate the x label template
             RectTransform labelX = Instantiate(labelTemplateX);
@@ -223,14 +217,14 @@ public class Window_Graph : MonoBehaviour {
         int separatorCount = 10;
         for (int i = 0; i <= separatorCount; i++) {
             // Duplicate the label template
-            RectTransform labelY = Instantiate(labelTemplateY);
-            labelY.tag = "Temp";
-            labelY.SetParent(graphContainer, false);
-            labelY.gameObject.SetActive(true);
-            float normalizedValue = i * 1f / separatorCount;
-            labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
-            labelY.GetComponent<Text>().text = getAxisLabelY(yMinimum + (normalizedValue * (yMaximum - yMinimum)));
-            gameObjectList.Add(labelY.gameObject);
+            //RectTransform labelY = Instantiate(labelTemplateY);
+            //labelY.tag = "Temp";
+            //labelY.SetParent(graphContainer, false);
+            //labelY.gameObject.SetActive(true);
+            //float normalizedValue = i * 1f / separatorCount;
+            //labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
+            //labelY.GetComponent<Text>().text = getAxisLabelY(yMinimum + (normalizedValue * (yMaximum - yMinimum)));
+            //gameObjectList.Add(labelY.gameObject);
 
             // Duplicate the dash template
             //RectTransform dashY = Instantiate(dashTemplateY);
@@ -248,7 +242,7 @@ public class Window_Graph : MonoBehaviour {
      * */
     private interface IGraphVisual {
 
-        List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth);
+        List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth, List<int> valores, int posicao, GameObject textObj);
 
     }
 
@@ -268,23 +262,42 @@ public class Window_Graph : MonoBehaviour {
             this.barWidthMultiplier = barWidthMultiplier;
         }
 
-        public List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth) {
-            GameObject barGameObject = CreateBar(graphPosition, graphPositionWidth);
+        public List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth, List<int> valores, int posicao, GameObject textObj) {
+            GameObject barGameObject = CreateBar(graphPosition, graphPositionWidth, valores, posicao, textObj);
             return new List<GameObject>() { barGameObject };
         }
 
-        private GameObject CreateBar(Vector2 graphPosition, float barWidth) {
-            GameObject gameObject = new GameObject("bar", typeof(Image));
-            gameObject.tag = "Temp";
-            gameObject.transform.SetParent(graphContainer, false);
-            gameObject.GetComponent<Image>().color = barColor;
-            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+        private GameObject CreateBar(Vector2 graphPosition, float barWidth, List<int> valores, int i, GameObject textObj) {
+            GameObject gameObject_z = new GameObject("bar", typeof(Image));
+            gameObject_z.tag = "Temp";
+            gameObject_z.transform.SetParent(graphContainer, false);
+            gameObject_z.GetComponent<Image>().color = barColor;
+            RectTransform rectTransform = gameObject_z.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(graphPosition.x, 0f);
             rectTransform.sizeDelta = new Vector2(barWidth * barWidthMultiplier, graphPosition.y);
             rectTransform.anchorMin = new Vector2(0, 0);
             rectTransform.anchorMax = new Vector2(0, 0);
             rectTransform.pivot = new Vector2(.5f, 0f);
-            return gameObject;
+            Debug.Log("enbtrou barra");
+            GameObject textValor = new GameObject("textoNum", typeof(TextMeshProUGUI));
+            textValor.tag = "Temp";
+            textValor.transform.SetParent(gameObject_z.transform);
+            textValor.GetComponent<TextMeshProUGUI>().text = valores[i].ToString();
+            textValor.transform.position = new Vector3(0, 0, 0);
+            //rectTransformText.anchoredPosition = new Vector2(graphPosition.x, 0f);
+            //rectTransformText.sizeDelta = new Vector2(barWidth * barWidthMultiplier, graphPosition.y);
+            //rectTransformText.anchorMin = new Vector2(0, 0);
+            //rectTransformText.anchorMax = new Vector2(0, 0);
+            //rectTransformText.pivot = new Vector2(.5f, 0f);
+
+            //GameObject textoValor = Instantiate(textObj, gameObject_z.transform.position, Quaternion.identity);
+            //textoValor.transform.SetParent(gameObject_z.transform, false);
+            //textoValor.transform.position = new Vector3(0, 0, 0);
+            //textoValor.GetComponent<TextMeshProUGUI>().text = valores[i].ToString();
+            //RectTransform rectTransformText = textoValor.GetComponent<RectTransform>();
+            //rectTransformText.anchoredPosition = new Vector2(gameObject_z.transform.position.x, 0f);
+            //rectTransformText.anchoredPosition = new Vector2(gameObject_z.transform.position.y, 0f);
+            return gameObject_z;
         }
     }
 
@@ -309,7 +322,7 @@ public class Window_Graph : MonoBehaviour {
         }
 
 
-        public List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth) {
+        public List<GameObject> AddGraphVisual(Vector2 graphPosition, float graphPositionWidth, List<int> valores, int posicao, GameObject textObj) {
             List<GameObject> gameObjectList = new List<GameObject>();
             GameObject dotGameObject = CreateDot(graphPosition);
             gameObjectList.Add(dotGameObject);

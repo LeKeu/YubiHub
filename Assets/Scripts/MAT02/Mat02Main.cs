@@ -31,6 +31,11 @@ public class Mat02Main : MonoBehaviour
 
     IEnumerator CriarPeixes()
     {
+        foreach( var botao in botoes )
+        {
+            botao.enabled = false;
+            botao.GetComponentInChildren<TextMeshProUGUI>().text = "";
+        }
         numeroPeixes = Random.Range(1, 11);
         yield return new WaitForSeconds(1.5f);
         RespostaBotoes(numeroPeixes);
@@ -40,6 +45,10 @@ public class Mat02Main : MonoBehaviour
         {
             var px = Instantiate(peixes[Random.Range(0, peixes.Count)], posicoesNovas[i].gameObject.transform.position, Quaternion.identity);
             px.transform.parent = posicoesNovas[i].transform;
+        }
+        foreach (var botao in botoes)
+        {
+            botao.enabled = true;
         }
     }
 

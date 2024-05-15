@@ -170,7 +170,7 @@ public class Mat03Main : MonoBehaviour
             case 1:
                 qntdBut = 10; linhas = 2; break;
             case 2:
-                qntdBut = 12; linhas = 4; break;
+                qntdBut = 12; linhas = 3; break;
         }
         area.GetComponent<GridLayoutGroup>().constraintCount = linhas;
     }
