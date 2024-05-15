@@ -248,7 +248,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 20, y: 20}
+  m_Spacing: {x: 30, y: 30}
   m_Constraint: 2
   m_ConstraintCount: 2
 --- !u!114 &171987974
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 1320020025}
   - component: {fileID: 1320020024}
   m_Layer: 5
-  m_Name: Button
+  m_Name: voltar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -476,7 +476,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 30257636}
         m_TargetAssemblyTypeName: BotoesGerais, Assembly-CSharp
-        m_MethodName: MenuJogos
+        m_MethodName: MatMenu03
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
