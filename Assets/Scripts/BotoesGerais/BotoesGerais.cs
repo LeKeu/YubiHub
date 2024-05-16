@@ -89,6 +89,7 @@ public class BotoesGerais : MonoBehaviour
 
     public void SairJogo()
     {
+        //PlayerPrefs.DeleteAll();
         Application.Quit();
     }
 }

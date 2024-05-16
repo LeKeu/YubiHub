@@ -21,6 +21,7 @@ public class InfoJogador : MonoBehaviour
     public static List<string> DadosJogador;
     public static List<string> JogadorScores;
     public static List<string> NomesJogos;
+    // lista de logos está na classe de logos
 
     private List<string> etcs = new List<string>() {";", ",", ".", "/", "?", "\\", "|", "[", "]", "{", "}" };
 
@@ -92,7 +93,8 @@ public class InfoJogador : MonoBehaviour
         StartCoroutine(AparecerTexto("status", "Nome cadastrado com sucesso!", 3f));
         string jogadores = PlayerPrefs.GetString("Jogadores");
 
-        PlayerPrefs.SetString("Jogadores", jogadores + nome.text + ";");
+        PlayerPrefs.SetString("Jogadores", jogadores + nome.text + ";"); // lista de nomes dividido por ';'
+        Logos_esc.SalvarLogo(nome.text);    // chamo para salva o icone escolhido do jogador
     }
 
     IEnumerator AparecerTexto(string nomeTexto, string mensagem, float segundos)
@@ -115,6 +117,8 @@ public class InfoJogador : MonoBehaviour
         }
 
         foreach(string dado in DadosJogador) { PlayerPrefs.DeleteKey(dado); }
+
+        if(PlayerPrefs.HasKey($"{nomeApagar}_logo")) { PlayerPrefs.DeleteKey($"{nomeApagar}_logo"); }
 
         AtualizarJogadores(nomes);
 
@@ -164,6 +168,12 @@ public class InfoJogador : MonoBehaviour
 
             novoBut.GetComponentInChildren<TextMeshProUGUI>().text = aluno;
             novoBut.name = aluno;
+
+            if (PlayerPrefs.HasKey($"{aluno}_logo")) 
+            { Debug.Log("logoss"); novoBut.GetComponent<Image>().sprite =  Logos_esc.Logos[PlayerPrefs.GetInt($"{aluno}_logo")]; }
+            else { Debug.Log("nao tem ="); }
+            Debug.Log($"{aluno}_logo");
+             
         }
     }
 
