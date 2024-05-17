@@ -102,13 +102,11 @@ public class CriarPergunta : MonoBehaviour
 
         if (isModel)
         {
-            Model_Range_MAT01 mod = GameObject.FindGameObjectWithTag("Model").GetComponent<Model_Range_MAT01>();
-            
             Debug.Log("streak --> " + streak);
-            Debug.Log(mod.name);
-            List<int> valoresModel = mod.ResultModel(15);
-            limiteMax = valoresModel[0];
-            limiteMin = valoresModel[1];
+            Debug.Log(gameObject.GetComponent<Model_Range_MAT01>().name);
+            List<float> valoresModel = gameObject.GetComponent<Model_Range_MAT01>().ResultModel((float)streak);
+            limiteMax = (int)valoresModel[0];
+            limiteMin = (int)valoresModel[1];
             Debug.Log("limite max --> "+limiteMax);
             Debug.Log("limite min --> " + limiteMin);
         }
@@ -159,7 +157,7 @@ public class CriarPergunta : MonoBehaviour
     public void ChecarResposta()
     {
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
-        { jogador.PerderVida(); streak = 0; }
+        { jogador.PerderVida(); streak--; }
         else { jogador.GanharPontoMat01(); inimigo.Morrer(); streak++; }
 
         if(JogadorMat01.vidas >= 0)

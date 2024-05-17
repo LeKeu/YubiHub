@@ -2,51 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TensorFlowLite;
+using System.IO;
 
 public class Model_Range_MAT01 : MonoBehaviour
 {
 
-    string fileName;
+    [SerializeField] string filePath = "Assets/StreamingAssets/Mat01Model_lite.tflite";
     Interpreter interpreter;
 
     private void Awake()
     {
-        fileName = "Mat01Model.tflite";
+        
     }
 
-    void Start()
+    private void OnDestroy()
+    {
+        interpreter.Dispose();
+    }
+
+    public List<float> ResultModel(float streak)
     {
         var options = new InterpreterOptions()
         {
             threads = 2,
         };
 
-        interpreter = new Interpreter(FileUtil.LoadFile(fileName), options);
+        interpreter = new Interpreter(File.ReadAllBytes(filePath), options);
         interpreter.AllocateTensors();
-    }
 
-    public List<int> ResultModel(int streak)
-    {
-        int[] input = new int[1];
-        input[0] = streak;
+        Debug.Log("streak entrando " + streak);
+        var input = new float[1];
+        input[0] = (float)streak;
         var output = new float[2];
 
-        interpreter.ResetVariableTensors();
+        //interpreter.ResetVariableTensors();
         interpreter.SetInputTensorData(0, input);
         interpreter.Invoke();
         interpreter.GetOutputTensorData(0, output);
 
-        List<int> returnValues = new List<int>
+        Debug.Log(output[0]);
+        Debug.Log(output[1]);
+
+        List<float> returnValues = new List<float>
         {
-            (int)Mathf.Ceil(output[0]),
-            (int)Mathf.Ceil(output[1])
+            Mathf.Ceil(output[0]),
+            Mathf.Ceil(output[1])
         };
 
-        return returnValues;
-    }
+        Debug.Log(returnValues[0]);
+        Debug.Log(returnValues[1]);
 
-    private void OnDestroy()
-    {
-        interpreter.Dispose();
+        return returnValues;
     }
 }
