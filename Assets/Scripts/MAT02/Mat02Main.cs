@@ -64,16 +64,16 @@ public class Mat02Main : MonoBehaviour
         List<Button> botoesNovos = botoes.OrderBy(x => Random.value).ToList();
         for (int i = 0;i < botoesNovos.Count-1;i++)
         {
-            botoesNovos[i].GetComponentInChildren<TextMeshProUGUI>().text = NumRedor(numCerto).ToString();
+            botoesNovos[i].GetComponentInChildren<TextMeshProUGUI>().text = NumRedor(numCerto, i).ToString();
             botoesNovos[i].gameObject.tag = "Errada";
         }
         botoesNovos[botoesNovos.Count - 1].GetComponentInChildren<TextMeshProUGUI>().text = numCerto.ToString();
         botoesNovos[botoesNovos.Count - 1].gameObject.tag = "Certa";
     }
 
-    private int NumRedor(int num)
+    private int NumRedor(int num, int i)
     {
-        int numNovo = Random.Range(1, num);
+        int numNovo = Random.Range(1, 10);
         if(num != 1) 
         {
             while (numNovo == num)
@@ -81,6 +81,12 @@ public class Mat02Main : MonoBehaviour
                 numNovo = Random.Range(1, num);
             }
         }
+
+        //if(i == 1)
+        //{
+        //    int n1 = int.Parse(GameObject.Find("but01").GetComponent<TextMeshProUGUI>().text);
+        //    int n2 = int.Parse(GameObject.Find("but02").GetComponent<TextMeshProUGUI>().text);
+        //}
         
         return numNovo;
     }
