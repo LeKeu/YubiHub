@@ -7,11 +7,19 @@ using System.IO;
 public class Model_Range_MAT01 : MonoBehaviour
 {
 
-    [SerializeField] string filePath = "Assets/StreamingAssets/Mat01Model_lite.tflite";
+    [SerializeField] string fileName = "Mat01Model_lite.tflite";
     Interpreter interpreter;
 
     private void Awake()
     {
+        // Construct the file path
+        string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
+
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"Model file not found at: {filePath}");
+            return;
+        }
         
     }
 
@@ -28,7 +36,20 @@ public class Model_Range_MAT01 : MonoBehaviour
             threads = 2,
         };
 
-        interpreter = new Interpreter(File.ReadAllBytes(filePath), options);
+        try
+        {
+            byte[] modelData = File.ReadAllBytes(fileName);
+            interpreter = new Interpreter(modelData, options);
+            interpreter.AllocateTensors();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Failed to load model: {ex}");
+        }
+
+        Debug.Log("MODELMODEL");
+
+        interpreter = new Interpreter(FileUtil.LoadFile(fileName), options);
         interpreter.AllocateTensors();
 
         var input = new float[1];
