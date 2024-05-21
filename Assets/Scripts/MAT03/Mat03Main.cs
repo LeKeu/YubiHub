@@ -30,6 +30,8 @@ public class Mat03Main : MonoBehaviour
     int firstGuessIndex, secondGuessIndex;
     string firstGuessPuzzle, secondGuessPuzzle;
 
+    SFX_scripts sFX_Scripts;
+
     private void Awake()
     {
         Numeros = Resources.LoadAll<Sprite>("Sprites/Numeros");
@@ -40,6 +42,7 @@ public class Mat03Main : MonoBehaviour
 
     private void Start()
     {
+        sFX_Scripts = gameObject.GetComponent<SFX_scripts>();
         nomeMat03 = "Mat03";
         GameObject[] objects = GameObject.FindGameObjectsWithTag("ButMemoria");
         foreach (GameObject obj in objects)
@@ -112,30 +115,31 @@ public class Mat03Main : MonoBehaviour
 
     IEnumerator ChecarSeIguais()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         if (firstGuessPuzzle == secondGuessPuzzle && firstGuessIndex != secondGuessIndex)
         {
-            yield return new WaitForSeconds(.5f);
+            sFX_Scripts.SoundAcertar();
+            yield return new WaitForSeconds(1f);
 
             buts[firstGuessIndex].interactable = false;
             buts[secondGuessIndex].interactable = false;
 
             buts[firstGuessIndex].image.color = new Color(0, 0, 0, 0);
             buts[secondGuessIndex].image.color = new Color(0, 0, 0, 0);
-
             ChecarSeAcabou();
         }
-        else
+        else    // se não forem iguais
         {
             if (firstGuessIndex != secondGuessIndex)
             {
-                yield return new WaitForSeconds(.5f);
-
+                sFX_Scripts.SoundErrar();
+                yield return new WaitForSeconds(1f);
+                
                 buts[firstGuessIndex].image.sprite = bgImg;
                 buts[secondGuessIndex].image.sprite = bgImg;
             }
         }
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
 
         firstGuess = secondGuess = false;
     }

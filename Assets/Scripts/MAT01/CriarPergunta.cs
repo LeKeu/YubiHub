@@ -13,7 +13,7 @@ public class CriarPergunta : MonoBehaviour
     [SerializeField] GameObject ModeloScript;
     public static bool isModel;
     int streak;
-
+    SFX_scripts sFX_Scripts;
     [SerializeField] TextMeshProUGUI pergunta;
     [SerializeField] Button opc1;
     [SerializeField] Button opc2;
@@ -33,6 +33,7 @@ public class CriarPergunta : MonoBehaviour
     void Start()
     {
         streak = 0;
+        sFX_Scripts = gameObject.GetComponent<SFX_scripts>();
         jogador = GameObject.FindGameObjectWithTag("Player").GetComponent<JogadorMat01>();
         inimigo = GameObject.FindGameObjectWithTag("Inimigo").GetComponent<InimigoMat01>();
         StartCoroutine("GerarPergunta");
@@ -129,11 +130,6 @@ public class CriarPergunta : MonoBehaviour
         return new List<int>() { resp[0], resp[1], resp[2], operac };
     }   // resp0 = resposta da op, resp1 num1, resp2 num2, operac op usada na conta
 
-    void LimitesModelo()
-    {
-
-    }
-
     private int NumRedor(int num)
     { // 0 menor, 1 maior
         int numRedor = 0;
@@ -157,8 +153,8 @@ public class CriarPergunta : MonoBehaviour
     public void ChecarResposta()
     {
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
-        { jogador.PerderVida(); streak--; }
-        else { jogador.GanharPontoMat01(); inimigo.Morrer(); streak++; }
+        { jogador.PerderVida(); streak--; sFX_Scripts.SoundErrar(); }
+        else { jogador.GanharPontoMat01(); inimigo.Morrer(); streak++; sFX_Scripts.SoundAcertar(); }
 
         if(JogadorMat01.vidas >= 0)
             StartCoroutine("GerarPergunta");

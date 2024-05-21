@@ -12,6 +12,7 @@ public class Mat02Main : MonoBehaviour
     [SerializeField] List<GameObject> posicoes;
 
     [SerializeField] List<Button> botoes;
+    SFX_scripts sFX_Scripts;
 
     JogadorMat02 jogador;
     int numeroPeixes;
@@ -19,7 +20,7 @@ public class Mat02Main : MonoBehaviour
     void Start()
     {
         jogador = gameObject.GetComponent<JogadorMat02>();
-        
+        sFX_Scripts = gameObject.GetComponent<SFX_scripts>();
         StartCoroutine("CriarPeixes");
     }
 
@@ -37,7 +38,7 @@ public class Mat02Main : MonoBehaviour
             botao.GetComponentInChildren<TextMeshProUGUI>().text = "";
         }
         numeroPeixes = Random.Range(1, 11);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
         RespostaBotoes(numeroPeixes);
         List<GameObject> posicoesNovas = Misturar(posicoes);
 
@@ -99,8 +100,8 @@ public class Mat02Main : MonoBehaviour
     public void ChecarResposta() 
     {
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
-        { jogador.PerderVida(); }
-        else { jogador.GanharPontoMat01(); }
+        { jogador.PerderVida(); sFX_Scripts.SoundErrar(); }
+        else { jogador.GanharPontoMat01(); sFX_Scripts.SoundAcertar(); }
 
         if (JogadorMat02.vidas >= 0) { ApagarPeixes(); StartCoroutine("CriarPeixes"); }
     }
