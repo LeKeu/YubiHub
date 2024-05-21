@@ -24,12 +24,6 @@ public class Mat02Main : MonoBehaviour
         StartCoroutine("CriarPeixes");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     IEnumerator CriarPeixes()
     {
         foreach( var botao in botoes )
@@ -46,6 +40,7 @@ public class Mat02Main : MonoBehaviour
         {
             var px = Instantiate(peixes[Random.Range(0, peixes.Count)], posicoesNovas[i].gameObject.transform.position, Quaternion.identity);
             px.transform.parent = posicoesNovas[i].transform;
+            if(Random.Range(0, 2)==0) { px.GetComponent<SpriteRenderer>().flipX = true; Debug.Log("flip"); }
         }
         foreach (var botao in botoes)
         {
@@ -72,6 +67,7 @@ public class Mat02Main : MonoBehaviour
         botoesNovos[botoesNovos.Count - 1].gameObject.tag = "Certa";
     }
 
+    int aux=0;
     private int NumRedor(int num, int i)
     {
         int numNovo = Random.Range(1, 10);
@@ -82,7 +78,10 @@ public class Mat02Main : MonoBehaviour
                 numNovo = Random.Range(1, num);
             }
         }
-
+        Debug.Log($"i = {i}, numnovo = {numNovo}, aux = {aux}");
+        Debug.Log("=======================");
+        if(i == 0) { aux = numNovo; }
+        if(i == 1 && numNovo == aux) { numNovo = numNovo+1 == num? numNovo+2 : numNovo+1; Debug.Log("inguaiss"); }
         //if(i == 1)
         //{
         //    int n1 = int.Parse(GameObject.Find("but01").GetComponent<TextMeshProUGUI>().text);

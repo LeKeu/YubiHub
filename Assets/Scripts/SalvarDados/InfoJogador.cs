@@ -141,7 +141,7 @@ public class InfoJogador : MonoBehaviour
         List<string> nomes = new();
         nomes.AddRange(PlayerPrefs.GetString("Jogadores").Split(';'));
         nomes.RemoveAt(nomes.Count - 1);
-        foreach(string n in nomes) { Debug.Log(n); }
+        //foreach(string n in nomes) { Debug.Log(n); }
         return nomes;
     }
 
@@ -180,11 +180,8 @@ public class InfoJogador : MonoBehaviour
 
             novoBut.GetComponentInChildren<TextMeshProUGUI>().text = aluno;
             novoBut.name = aluno;
-            Debug.Log(PlayerPrefs.GetInt($"{aluno}_logo") + aluno);
             if (PlayerPrefs.HasKey($"{aluno}_logo")) 
-            { Debug.Log("logoss"); novoBut.GetComponent<Image>().sprite =  Logos_esc.Logos[PlayerPrefs.GetInt($"{aluno}_logo")]; }
-            else { Debug.Log("nao tem ="); }
-            Debug.Log($"{aluno}_logo");
+            { novoBut.GetComponent<Image>().sprite =  Logos_esc.Logos[PlayerPrefs.GetInt($"{aluno}_logo")]; }
              
         }
     }

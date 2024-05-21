@@ -17,7 +17,8 @@ public class Model_Range_MAT01 : MonoBehaviour
 
     private void OnDestroy()
     {
-        interpreter.Dispose();
+        if(CriarPergunta.isModel)
+            interpreter.Dispose();
     }
 
     public List<float> ResultModel(float streak)

@@ -56,7 +56,7 @@ public class CriarPergunta : MonoBehaviour
 
         for (int i = 0; i < posicoes.Count; i++)
         {
-            buttons[posicoes[i]].GetComponentInChildren<TextMeshProUGUI>().text = NumRedor(resp).ToString();
+            buttons[posicoes[i]].GetComponentInChildren<TextMeshProUGUI>().text = NumRedor(resp, i).ToString();
             buttons[posicoes[i]].gameObject.tag = "Errada";
         }
         buttons[posicoes[2]].GetComponentInChildren<TextMeshProUGUI>().text = resp.ToString();
@@ -130,7 +130,8 @@ public class CriarPergunta : MonoBehaviour
         return new List<int>() { resp[0], resp[1], resp[2], operac };
     }   // resp0 = resposta da op, resp1 num1, resp2 num2, operac op usada na conta
 
-    private int NumRedor(int num)
+    int aux = 0;
+    private int NumRedor(int num, int i)
     { // 0 menor, 1 maior
         int numRedor = 0;
 
@@ -141,7 +142,13 @@ public class CriarPergunta : MonoBehaviour
             if (esc == 0) { numRedor = Random.Range(num - 6, num - 1); }
             else { numRedor = Random.Range(num + 1, num + 6); }
             if (numRedor >= 0 && numRedor != num) { break; }
-        } return numRedor;
+        }
+        Debug.Log($"i = {i}, numnovo = {numRedor}, aux = {aux}");
+        Debug.Log("=======================");
+        if (i == 0) { aux = numRedor; }
+        if (i == 1 && numRedor == aux) { numRedor = numRedor + 1 == num ? numRedor + 2 : numRedor + 1; Debug.Log("inguaiss"); }
+
+        return numRedor;
         
     }
 
