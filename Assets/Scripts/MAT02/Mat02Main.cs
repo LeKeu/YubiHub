@@ -82,11 +82,6 @@ public class Mat02Main : MonoBehaviour
         Debug.Log("=======================");
         if(i == 0) { aux = numNovo; }
         if(i == 1 && numNovo == aux) { numNovo = numNovo+1 == num? numNovo+2 : numNovo+1; Debug.Log("inguaiss"); }
-        //if(i == 1)
-        //{
-        //    int n1 = int.Parse(GameObject.Find("but01").GetComponent<TextMeshProUGUI>().text);
-        //    int n2 = int.Parse(GameObject.Find("but02").GetComponent<TextMeshProUGUI>().text);
-        //}
         
         return numNovo;
     }
