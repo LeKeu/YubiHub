@@ -57,7 +57,7 @@ public class InfoJogador : MonoBehaviour
 
     void Start()
     {
-        if (SceneManager.GetActiveScene().name == "MenuInicial" || SceneManager.GetActiveScene().name == "Deletar")
+        if (SceneManager.GetActiveScene().name == "MenuInicial" || SceneManager.GetActiveScene().name == "Deletar" || SceneManager.GetActiveScene().name == "Cadastro2")
             CriarBotoesNomesJogadores();
 
         if(SceneManager.GetActiveScene().name == "ProfasMain") 
@@ -134,6 +134,23 @@ public class InfoJogador : MonoBehaviour
         AtualizarJogadores(nomes);
 
         SceneManager.LoadScene("Deletar");
+    }
+
+    public void DeletarJogador2()
+    {
+        List<string> nomes = RetornarNomes();
+
+        for (int i = 0; i < nomes.Count; i++)
+        {
+            if (nomes[i] == nomeApagar) nomes.RemoveAt(i);
+        }
+
+        foreach (string dado in DadosJogador) { PlayerPrefs.DeleteKey(dado); }
+        if (PlayerPrefs.HasKey($"{nomeApagar}_logo")) { PlayerPrefs.DeleteKey($"{nomeApagar}_logo"); }
+
+        AtualizarJogadores(nomes);
+
+        SceneManager.LoadScene("Cadastro2");
     }
 
     private List<string> RetornarNomes()

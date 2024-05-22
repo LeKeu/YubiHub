@@ -34,6 +34,7 @@ public class BotoesGerais : MonoBehaviour
     public void MenuJogos() { SceneManager.LoadScene("MenuJogos"); }
 
     public void Cadastro() { SceneManager.LoadScene("Cadastro"); }
+    public void Cadastro2() { SceneManager.LoadScene("Cadastro2"); }
     public void MenuInicial() { SceneManager.LoadScene("MenuInicial"); }
 
     public void Mat02() { SceneManager.LoadScene("Mat02"); }
@@ -71,6 +72,12 @@ public class BotoesGerais : MonoBehaviour
     {
         InfoJogador.nomeApagar = "";
         SceneManager.LoadScene("Deletar");
+    }
+
+    public void VoltarApagar2()
+    {
+        InfoJogador.nomeApagar = "";
+        SceneManager.LoadScene("Cadastro2");
     }
 
     public void SelecionarNomeGrafico() // nome do jogo

@@ -82,17 +82,21 @@ public class CriarPergunta : MonoBehaviour
 
     private List<int> Divisao(int limMin, int limMax)
     { // diminuindo o limMax do num2 para nao ficar numeros absurdos na divisao
-        int num1 = Random.Range(limMin, limMax), num2 = Random.Range(1, 11);
+        int num1 = Random.Range(limMin, limMax);
+        int num2 = isModel? Random.Range(limMin, limMax) : Random.Range(1, 11);
         while (num1 % num2 != 0)
         {
-            num1 = Random.Range(limMin, limMax); num2 = Random.Range(limMin, num1);
-        } 
+            num1 = Random.Range(limMin, limMax); 
+            num2 = isModel? Random.Range(limMin, limMax) : Random.Range(limMin, num1);
+        }
+        Debug.Log($"{num1}/{num2}");
         return new List<int>() { num1 / num2, num1, num2 };
     }
 
     private List<int> Multiplicacao(int limMin, int limMax)
     { // diminuindo o limMax do num2 para nao ficar numeros absurdos na multiplicacao
-        int num1 = Random.Range(limMin, limMax); int num2 = Random.Range(1, 9);     
+        int num1 = Random.Range(limMin, limMax); 
+        int num2 = isModel ? Random.Range(limMin, limMax) : Random.Range(1, 10);
         return new List<int>() { num1 * num2, num1, num2};
     }
 

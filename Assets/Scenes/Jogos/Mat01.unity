@@ -1796,7 +1796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c854b13cad838941b4c7c921da3e7cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filePath: Assets/StreamingAssets/Mat01Model_lite.tflite
+  fileName: Mat01Model_lite.tflite
 --- !u!114 &1387075274
 MonoBehaviour:
   m_ObjectHideFlags: 0
