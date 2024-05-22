@@ -22,6 +22,7 @@ public class InfoJogador : MonoBehaviour
     public static List<string> DadosJogador;
     public static List<string> JogadorScores;
     public static List<string> NomesJogos;
+    public static List<string> NomesJogosFake;
     // lista de logos está na classe de logos
 
     private List<string> etcs = new List<string>() {";", ",", ".", "/", "?", "\\", "|", "[", "]", "{", "}" };
@@ -32,23 +33,30 @@ public class InfoJogador : MonoBehaviour
         //nomeGrafico = "sees";
         DadosJogador = new List<string>()
         {
-            $"{nomeApagar}_Mat01_0", $"{nomeApagar}_Mat01_1", $"{nomeApagar}_Mat01_2",
+            $"{nomeApagar}_Mat01_0", $"{nomeApagar}_Mat01_1", $"{nomeApagar}_Mat01_2", $"{nomeApagar}_Mat01_3",
             $"{nomeApagar}_Mat02",
             $"{nomeApagar}_Mat03_0", $"{nomeApagar}_Mat03_1", $"{nomeApagar}_Mat03_2"
         };
 
         JogadorScores = new List<string>()
         {
-            $"{nomeGrafico}_Mat01_0_pontos", $"{nomeGrafico}_Mat01_1_pontos", $"{nomeGrafico}_Mat01_2_pontos",
+            $"{nomeGrafico}_Mat01_0_pontos", $"{nomeGrafico}_Mat01_1_pontos", $"{nomeGrafico}_Mat01_2_pontos", $"{nomeGrafico}_Mat01_3_pontos",
             $"{nomeGrafico}_Mat02_pontos",
             $"{nomeGrafico}_Mat03_0_pontos", $"{nomeGrafico}_Mat03_1_pontos", $"{nomeGrafico}_Mat03_2_pontos"
         };
 
         NomesJogos = new List<string>()
         {
-            $"Mat01_0", $"Mat01_1", $"Mat01_2",
+            $"Mat01_0", $"Mat01_1", $"Mat01_2", $"Mat01_3",
             $"Mat02",
             $"Mat03_0", $"Mat03_1", $"Mat03_2"
+        };
+
+        NomesJogosFake = new List<string>()
+        {
+            $"Jogo 1 - Fácil", $"Jogo 1 - Médio", $"Jogo 1 - Difícil", $"Jogo 1 - IA",
+            $"Jogo 2",
+            $"Jogo 3 - Fácil", $"Jogo 2 - Médio", $"Jogo 2 - Difícil"
         };
 
         BotoesGerais.nomeJogoGrafico = NomesJogos[0];
@@ -103,6 +111,8 @@ public class InfoJogador : MonoBehaviour
         string nomeAux = AjeitarNome(nome.text);
         nomesExistentes.Add(nomeAux);
         //AtualizarJogadores(nomesExistentes);
+
+        GameObject.Find("nome").GetComponent<TMP_InputField>().text = "";
         
         PlayerPrefs.SetString("Jogadores", jogadores + nomeAux + ";"); // lista de nomes dividido por ';'
         Logos_esc.SalvarLogo(nomeAux);    // chamo para salva o icone escolhido do jogador
@@ -206,17 +216,20 @@ public class InfoJogador : MonoBehaviour
     public void CriarBotoesNomesJogoes()
     {
         GameObject painelScroll = GameObject.FindGameObjectWithTag("PainelBotoesJogos");
+        int aux = 0;
 
-        foreach (var aluno in NomesJogos)
+        foreach (var jogo in NomesJogos)
         {
+            Debug.Log(jogo);
             var novoBut = Instantiate(
                 botaoJogos,
                 painelScroll.transform.position,
                 Quaternion.identity);
             novoBut.transform.SetParent(painelScroll.transform);
 
-            novoBut.GetComponentInChildren<TextMeshProUGUI>().text = aluno;
-            novoBut.name = aluno;
+            novoBut.GetComponentInChildren<TextMeshProUGUI>().text = NomesJogosFake[aux];
+            novoBut.name = jogo;
+            aux++;
         }
     }
 

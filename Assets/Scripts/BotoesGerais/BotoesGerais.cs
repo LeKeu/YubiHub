@@ -21,7 +21,7 @@ public class BotoesGerais : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "ProfasMain")
             windowGraph = GameObject.FindGameObjectWithTag("WindowGraph").GetComponent<Window_Graph>();
         if (SceneManager.GetActiveScene().name == "MenuJogos")
-        { GameObject.Find("nomeJogador").GetComponent<TextMeshProUGUI>().text = $"Olá {InfoJogador.nomeJogador}!"; }
+        { GameObject.Find("nomeJogador").GetComponent<TextMeshProUGUI>().text = $"Olá, {InfoJogador.nomeJogador}!"; }
     }
     public void MatMenu() { SceneManager.LoadScene("MatMenu01"); }
     public void Menu(TextMeshProUGUI nome)

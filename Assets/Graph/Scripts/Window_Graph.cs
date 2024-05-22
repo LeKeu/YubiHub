@@ -53,6 +53,50 @@ public class Window_Graph : MonoBehaviour {
         DesativarBotoes();
     }
 
+    private List<string> AuxSepararParametros(string parametro)
+    {
+        string[] par_separados = parametro.Split('_');
+        string nomeJogo=""; string dificuldade="";
+
+        List<string> retorno = new List<string>();
+        retorno.Add(par_separados[0]);
+        if(par_separados.Length == 3)
+        {
+            switch(par_separados[1]) 
+            {
+                case "Mat01": nomeJogo = "Jogo 1";
+                    break;
+                case "Mat03": nomeJogo = "Jogo 3";
+                    break; 
+            }
+            retorno.Add(nomeJogo);
+            switch (par_separados[2])
+            {
+                case "0":
+                    dificuldade = "Fácil";
+                    break;
+                case "1":
+                    dificuldade = "Médio";
+                    break;
+                case "2":
+                    dificuldade = "Difícil";
+                    break;
+                case "3":
+                    dificuldade = "IA";
+                    break;
+            }
+            retorno.Add(dificuldade);
+            
+        }
+        else
+        {
+            nomeJogo = "Jogo 2";
+            retorno.Add(nomeJogo);
+        }
+
+        return retorno;
+    }
+
     public void CriarGrafico(string parametro)
     {
         DesativarBotoes();
@@ -67,9 +111,12 @@ public class Window_Graph : MonoBehaviour {
 
         List<int> pontos = InfoJogador.RetornarPontos(parametro);
         Debug.Log("----"+parametro);
+        List<string> auxParametro = AuxSepararParametros(parametro);    // nome, jogo, dificuldade (se houver)
+        string auxAviso = auxParametro.Count == 3 ? auxParametro[2] : "";   // caso tenha dificuldade, pega ela
+
         if (pontos.Count == 0)
-        { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = "Ainda não há dados nesse jogo."; DesativarBotoes(); return; }
-        else { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = parametro; AtivarBotoes(); }
+        { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = $"{auxParametro[0]} ainda não tem dados no jogo {auxParametro[1]} {auxAviso}"; DesativarBotoes(); return; }
+        else { GameObject.Find("aviso").GetComponent<TextMeshProUGUI>().text = $"{auxParametro[0]} - {auxParametro[1]} {auxAviso}"; AtivarBotoes(); }
 
         IGraphVisual lineGraphVisual = new LineGraphVisual(graphContainer, dotSprite, Color.green, new Color(1, 1, 1, .5f));
         IGraphVisual barChartVisual = new BarChartVisual(graphContainer, Color.white, .8f);
@@ -328,6 +375,8 @@ public class Window_Graph : MonoBehaviour {
             gameObjectList.Add(dotGameObject);
             if (lastDotGameObject != null) {
                 GameObject dotConnectionGameObject = CreateDotConnection(lastDotGameObject.GetComponent<RectTransform>().anchoredPosition, dotGameObject.GetComponent<RectTransform>().anchoredPosition);
+                // Adicionando como primeiro filho
+                dotConnectionGameObject.transform.SetSiblingIndex(0);
                 gameObjectList.Add(dotConnectionGameObject);
             }
             lastDotGameObject = dotGameObject;
@@ -350,6 +399,8 @@ public class Window_Graph : MonoBehaviour {
         private GameObject CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB) {
             GameObject gameObject = new GameObject("dotConnection", typeof(Image));
             gameObject.transform.SetParent(graphContainer, false);
+            Color dotConnectionColor = gameObject.GetComponent<Image>().color;
+            dotConnectionColor.a = 1.0f;  // Definindo a transparência para 100%
             gameObject.GetComponent<Image>().color = dotConnectionColor;
             RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
             Vector2 dir = (dotPositionB - dotPositionA).normalized;
