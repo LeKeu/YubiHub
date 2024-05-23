@@ -26,6 +26,7 @@ public class CriarPergunta : MonoBehaviour
     JogadorMat01 jogador;
     InimigoMat01 inimigo;
 
+    [SerializeField] List<Sprite> botoes;
     List<string> operacoes = new List<string>() { "+", "-", "x", "/" };
 
     //public string pergunta;
@@ -43,6 +44,7 @@ public class CriarPergunta : MonoBehaviour
     {
         AtrasarPergutas();
         yield return new WaitForSeconds(1.5f);
+        CorBotaoPadrao();
         AtrasarPergutas();
         List<Button> buttons = new List<Button>() { opc1, opc2, opc3 };
 
@@ -102,18 +104,18 @@ public class CriarPergunta : MonoBehaviour
 
     private List<int> Operacoes()
     {
-        Debug.Log("entrou operações");
+        //Debug.Log("entrou operações");
         List<int> dfc = new List<int>() { rangeFacil, rangeMedio, rangeDificil };
         int limiteMax; int limiteMin;
 
         if (isModel)
         {
-            Debug.Log("streak --> " + streak);
+            //Debug.Log("streak --> " + streak);
             List<float> valoresModel = gameObject.GetComponent<Model_Range_MAT01>().ResultModel((float)streak);
             limiteMax = (int)valoresModel[0];
             limiteMin = (int)valoresModel[1];
-            Debug.Log("limite max --> "+limiteMax);
-            Debug.Log("limite min --> " + limiteMin);
+            //Debug.Log("limite max --> "+limiteMax);
+            //Debug.Log("limite min --> " + limiteMin);
         }
         else
         {
@@ -147,8 +149,8 @@ public class CriarPergunta : MonoBehaviour
             else { numRedor = Random.Range(num + 1, num + 6); }
             if (numRedor >= 0 && numRedor != num) { break; }
         }
-        Debug.Log($"i = {i}, numnovo = {numRedor}, aux = {aux}");
-        Debug.Log("=======================");
+        //Debug.Log($"i = {i}, numnovo = {numRedor}, aux = {aux}");
+        //Debug.Log("=======================");
         if (i == 0) { aux = numRedor; }
         if (i == 1 && numRedor == aux) { numRedor = numRedor + 1 == num ? numRedor + 2 : numRedor + 1; Debug.Log("inguaiss"); }
 
@@ -166,7 +168,7 @@ public class CriarPergunta : MonoBehaviour
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
         { jogador.PerderVida(); streak--; sFX_Scripts.SoundErrar(); }
         else { jogador.GanharPontoMat01(); inimigo.Morrer(); streak++; sFX_Scripts.SoundAcertar(); }
-
+        CorBotaoCertoErrado(EventSystem.current.currentSelectedGameObject);
         if(JogadorMat01.vidas >= 0)
             StartCoroutine("GerarPergunta");
         else { Limpar(); }
@@ -182,6 +184,23 @@ public class CriarPergunta : MonoBehaviour
     private void Limpar()
     {
         pergunta.text = "";
-        opc1.GetComponentInChildren<TextMeshProUGUI>().text = ""; opc2.GetComponentInChildren<TextMeshProUGUI>().text = ""; opc3.GetComponentInChildren<TextMeshProUGUI>().text = "";
+        //opc1.GetComponentInChildren<TextMeshProUGUI>().text = ""; opc2.GetComponentInChildren<TextMeshProUGUI>().text = ""; opc3.GetComponentInChildren<TextMeshProUGUI>().text = "";
+    }
+
+    private void CorBotaoCertoErrado(GameObject butCerto) // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
+    {
+        Debug.Log("coresbuts!!!");
+        GameObject.Find("opc1").GetComponent<Image>().sprite = opc1.transform.tag == "Certo" ? botoes[0] : botoes[1];
+        GameObject.Find("opc2").GetComponent<Image>().sprite = opc2.transform.tag == "Certo" ? botoes[0] : botoes[1];
+        GameObject.Find("opc3").GetComponent<Image>().sprite = opc3.transform.tag == "Certo" ? botoes[0] : botoes[1];
+
+        butCerto.GetComponent<Image>().sprite = botoes[0];
+    }
+
+    private void CorBotaoPadrao() // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
+    {
+        GameObject.Find("opc1").GetComponent<Image>().sprite = botoes[2];
+        GameObject.Find("opc2").GetComponent<Image>().sprite = botoes[2];
+        GameObject.Find("opc3").GetComponent<Image>().sprite = botoes[2];
     }
 }
