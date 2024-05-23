@@ -12,6 +12,7 @@ public class Mat02Main : MonoBehaviour
     [SerializeField] List<GameObject> posicoes;
 
     [SerializeField] List<Button> botoes;
+    [SerializeField] List<Sprite> botoesSprites;
     SFX_scripts sFX_Scripts;
 
     JogadorMat02 jogador;
@@ -29,10 +30,11 @@ public class Mat02Main : MonoBehaviour
         foreach( var botao in botoes )
         {
             botao.enabled = false;
-            botao.GetComponentInChildren<TextMeshProUGUI>().text = "";
+            //botao.GetComponentInChildren<TextMeshProUGUI>().text = "";
         }
         numeroPeixes = Random.Range(1, 11);
         yield return new WaitForSeconds(2.5f);
+        CorBotaoPadrao();
         RespostaBotoes(numeroPeixes);
         List<GameObject> posicoesNovas = Misturar(posicoes);
 
@@ -40,7 +42,7 @@ public class Mat02Main : MonoBehaviour
         {
             var px = Instantiate(peixes[Random.Range(0, peixes.Count)], posicoesNovas[i].gameObject.transform.position, Quaternion.identity);
             px.transform.parent = posicoesNovas[i].transform;
-            if(Random.Range(0, 2)==0) { px.GetComponent<SpriteRenderer>().flipX = true; Debug.Log("flip"); }
+            if(Random.Range(0, 2)==0) { px.GetComponent<SpriteRenderer>().flipX = true; }
         }
         foreach (var botao in botoes)
         {
@@ -78,8 +80,8 @@ public class Mat02Main : MonoBehaviour
                 numNovo = Random.Range(1, num);
             }
         }
-        Debug.Log($"i = {i}, numnovo = {numNovo}, aux = {aux}");
-        Debug.Log("=======================");
+        //Debug.Log($"i = {i}, numnovo = {numNovo}, aux = {aux}");
+        //Debug.Log("=======================");
         if(i == 0) { aux = numNovo; }
         if(i == 1 && numNovo == aux) { numNovo = numNovo+1 == num? numNovo+2 : numNovo+1; Debug.Log("inguaiss"); }
         
@@ -96,8 +98,24 @@ public class Mat02Main : MonoBehaviour
         if (EventSystem.current.currentSelectedGameObject.tag != "Certa")
         { jogador.PerderVida(); sFX_Scripts.SoundErrar(); }
         else { jogador.GanharPontoMat01(); sFX_Scripts.SoundAcertar(); }
-
+        CorBotaoCertoErrado(EventSystem.current.currentSelectedGameObject);
         if (JogadorMat02.vidas >= 0) { ApagarPeixes(); StartCoroutine("CriarPeixes"); }
+    }
+
+    private void CorBotaoCertoErrado(GameObject butCerto) // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
+    {
+        foreach(Button but in botoes)
+        {
+            if(but.transform.tag == "Certa") { but.GetComponent<Image>().sprite = botoesSprites[0]; }
+            else { but.GetComponent<Image>().sprite = botoesSprites[1]; }
+        }
+    }
+
+    private void CorBotaoPadrao() // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
+    {
+        GameObject.Find("but01").GetComponent<Image>().sprite = botoesSprites[2];
+        GameObject.Find("but02").GetComponent<Image>().sprite = botoesSprites[2];
+        GameObject.Find("but03").GetComponent<Image>().sprite = botoesSprites[2];
     }
 
 

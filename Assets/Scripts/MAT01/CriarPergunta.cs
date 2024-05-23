@@ -189,12 +189,9 @@ public class CriarPergunta : MonoBehaviour
 
     private void CorBotaoCertoErrado(GameObject butCerto) // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
     {
-        Debug.Log("coresbuts!!!");
-        GameObject.Find("opc1").GetComponent<Image>().sprite = opc1.transform.tag == "Certo" ? botoes[0] : botoes[1];
-        GameObject.Find("opc2").GetComponent<Image>().sprite = opc2.transform.tag == "Certo" ? botoes[0] : botoes[1];
-        GameObject.Find("opc3").GetComponent<Image>().sprite = opc3.transform.tag == "Certo" ? botoes[0] : botoes[1];
-
-        butCerto.GetComponent<Image>().sprite = botoes[0];
+        GameObject.Find("opc1").GetComponent<Image>().sprite = opc1.transform.tag == "Certa" ? botoes[0] : botoes[1];
+        GameObject.Find("opc2").GetComponent<Image>().sprite = opc2.transform.tag == "Certa" ? botoes[0] : botoes[1];
+        GameObject.Find("opc3").GetComponent<Image>().sprite = opc3.transform.tag == "Certa" ? botoes[0] : botoes[1];
     }
 
     private void CorBotaoPadrao() // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
