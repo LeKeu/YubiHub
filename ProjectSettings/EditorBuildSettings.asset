@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Menus/MenuInicial.unity
     guid: 505592b891e8a7e478a53e151c75873d
   - enabled: 1
@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Jogos/MatMenu01.unity
     guid: bab088b2cdde6cd4b91b406233e6341b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Profs/Cadastro.unity
     guid: 276d745f1ddb1e24bb7a3e89aaec7afa
   - enabled: 1
@@ -29,16 +29,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Jogos/Mat02.unity
     guid: 706701af64d76a145b6cf1a0e50c9cd9
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Profs/ProfasMain.unity
     guid: 654b698e8900e9d40aaa07d111a611af
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Profs/DeletarAux.unity
     guid: 2c68f77d7f82c944fa73619177c40d6e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Profs/Deletar.unity
     guid: 8b71bbe62d6721c479a6de1d2e956b19
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Profs/Cadastro2.unity
     guid: baa5f4fc500936a44818b15aa212a41b
   m_configObjects: {}

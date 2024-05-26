@@ -10,25 +10,18 @@ public class BotoesGerais : MonoBehaviour
     public static string nomeJogoGrafico;
     public static string nomeJogadorGrafico;
 
-    [SerializeField] GameObject PainelSenha;
     [SerializeField] GameObject PainelNormal;
-    GameObject PainelApagar;
-    Window_Graph windowGraph;
-
-    private void Start()
-    {
-        
-        if (SceneManager.GetActiveScene().name == "ProfasMain")
-            windowGraph = GameObject.FindGameObjectWithTag("WindowGraph").GetComponent<Window_Graph>();
-        if (SceneManager.GetActiveScene().name == "MenuJogos")
-        { GameObject.Find("nomeJogador").GetComponent<TextMeshProUGUI>().text = $"Olá, {InfoJogador.nomeJogador}!"; }
-    }
     public void MatMenu() { SceneManager.LoadScene("MatMenu01"); }
     public void Menu(TextMeshProUGUI nome)
     {
         InfoJogador.nomeJogador = nome.text;
         InfoJogador.AtualizarNome(nome.text);
         SceneManager.LoadScene("MenuJogos");
+    }
+
+    public void Votar()
+    {
+        Application.OpenURL("https://www.youtube.com/watch?v=cvh0nX08nRw");
     }
 
     public void MenuJogos() { SceneManager.LoadScene("MenuJogos"); }
@@ -39,13 +32,6 @@ public class BotoesGerais : MonoBehaviour
 
     public void Mat02() { SceneManager.LoadScene("Mat02"); }
     public void MatMenu03() { SceneManager.LoadScene("MatMenu03"); }
-    public void Profs() { SceneManager.LoadScene("ProfasMain"); }
-    public void ProfsFechar() { PainelSenha.SetActive(false); }
-
-    public void ChecarSenha(TMP_InputField senha)
-    {
-        if (senha.text == "") { SceneManager.LoadScene("ProfasMain"); }
-    }
 
     public void FecharPainel(GameObject painel)
     {
@@ -66,32 +52,6 @@ public class BotoesGerais : MonoBehaviour
     {
         InfoJogador.nomeApagar = EventSystem.current.currentSelectedGameObject.name;
         SceneManager.LoadScene("DeletarAux");
-    }
-
-    public void VoltarApagar()
-    {
-        InfoJogador.nomeApagar = "";
-        SceneManager.LoadScene("Deletar");
-    }
-
-    public void VoltarApagar2()
-    {
-        InfoJogador.nomeApagar = "";
-        SceneManager.LoadScene("Cadastro2");
-    }
-
-    public void SelecionarNomeGrafico() // nome do jogo
-    {
-        nomeJogoGrafico = EventSystem.current.currentSelectedGameObject.name;
-        windowGraph.ClearGraph();
-        windowGraph.CriarGrafico($"{nomeJogadorGrafico}_{nomeJogoGrafico}");
-    }
-
-    public void SelecionarNomeJogador() // nome do jogador
-    {
-        nomeJogadorGrafico = EventSystem.current.currentSelectedGameObject.name;
-        windowGraph.ClearGraph();
-        windowGraph.CriarGrafico($"{nomeJogadorGrafico}_{nomeJogoGrafico}");
     }
 
     public void SairJogo()

@@ -1739,8 +1739,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1387075272}
   - component: {fileID: 1387075271}
-  - component: {fileID: 1387075273}
   - component: {fileID: 1387075274}
+  - component: {fileID: 1387075275}
   m_Layer: 0
   m_Name: Geral
   m_TagString: Untagged
@@ -1787,19 +1787,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1387075273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1387075270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c854b13cad838941b4c7c921da3e7cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileName: Mat01Model_lite.tflite
 --- !u!114 &1387075274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1815,6 +1802,19 @@ MonoBehaviour:
   audioSource: {fileID: 1237149581}
   certo: {fileID: 8300000, guid: 4d856c063a7d0904c878ad1a58321e1b, type: 3}
   errado: {fileID: 8300000, guid: 87a5970e157b75045aa8bcb4b2abfa81, type: 3}
+--- !u!114 &1387075275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387075270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c854b13cad838941b4c7c921da3e7cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileName: Mat01Model_lite.tflite
 --- !u!1001 &1405933237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2481,7 +2481,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad967df45503af4596f5c0f3ebb2b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PainelSenha: {fileID: 0}
   PainelNormal: {fileID: 0}
 --- !u!1 &1984381032
 GameObject:
