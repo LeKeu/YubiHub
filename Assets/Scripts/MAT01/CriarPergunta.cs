@@ -152,7 +152,7 @@ public class CriarPergunta : MonoBehaviour
         //Debug.Log($"i = {i}, numnovo = {numRedor}, aux = {aux}");
         //Debug.Log("=======================");
         if (i == 0) { aux = numRedor; }
-        if (i == 1 && numRedor == aux) { numRedor = numRedor + 1 == num ? numRedor + 2 : numRedor + 1; Debug.Log("inguaiss"); }
+        if (i == 1 && (numRedor == aux)) { numRedor = numRedor + 1 == num ? numRedor + 2 : numRedor + 1; Debug.Log("inguaiss"); }
 
         return numRedor;
         

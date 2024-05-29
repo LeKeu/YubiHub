@@ -27,6 +27,8 @@ TagManager:
   - PainelBotoesJogos
   - Temp
   - Model
+  - Bolas
+  - Certa2
   layers:
   - Default
   - TransparentFX
