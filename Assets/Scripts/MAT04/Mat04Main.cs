@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Mat04Main : MonoBehaviour
@@ -35,7 +36,7 @@ public class Mat04Main : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        partidas = 0; totalPartidas = 3;
+        partidas = 0; totalPartidas = 4;
         textPartidas.text = $"{partidas+1}/{totalPartidas}";
         Bolas = Resources.LoadAll<Sprite>("Sprites/Bolas");
         StartCoroutine("GerarPergunta");
@@ -128,12 +129,13 @@ public class Mat04Main : MonoBehaviour
 
     bool ChecarFinalPartida()
     {
+        string empate = "Empate!"; string j1 = "Jogador 1 venceu!"; string j2 = "Jogador 2 venceu!";
         partidas++;
         textPartidas.text = $"{partidas+1}/{totalPartidas}";
         if (partidas == totalPartidas)
         {
-            GameObject.Find("Final").GetComponent<TextMeshProUGUI>().text = $"Jogador {(jogador1 > jogador2 ? 1 : 2)} venceu!";
-            return true;
+            GameObject.Find("Final").GetComponent<TextMeshProUGUI>().text = $"{(jogador1 == jogador2? empate : jogador1 > jogador2 ? j1 : j2)}";
+            StartCoroutine("SairJogo");
         } return false;
     }
 
@@ -161,5 +163,11 @@ public class Mat04Main : MonoBehaviour
         GameObject.Find("op12").GetComponent<Image>().sprite = botoesSprites[2];
         GameObject.Find("op22").GetComponent<Image>().sprite = botoesSprites[2];
         GameObject.Find("op32").GetComponent<Image>().sprite = botoesSprites[2];
+    }
+
+    IEnumerator SairJogo()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene("MenuJogos");
     }
 }
