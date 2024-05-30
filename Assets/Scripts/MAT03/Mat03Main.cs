@@ -170,11 +170,11 @@ public class Mat03Main : MonoBehaviour
         switch (Mat03Menu.dificuldade)
         {
             case 0:
-                qntdBut = 8; linhas = 2; break;
+                qntdBut = 8; linhas = 4; break;
             case 1:
-                qntdBut = 10; linhas = 2; break;
+                qntdBut = 10; linhas = 5; break;
             case 2:
-                qntdBut = 12; linhas = 3; break;
+                qntdBut = 12; linhas = 4; break;
         }
         area.GetComponent<GridLayoutGroup>().constraintCount = linhas;
     }

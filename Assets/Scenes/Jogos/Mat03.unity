@@ -188,7 +188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad967df45503af4596f5c0f3ebb2b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PainelSenha: {fileID: 0}
   PainelNormal: {fileID: 0}
 --- !u!114 &30257637
 MonoBehaviour:
@@ -263,8 +262,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 60, y: 60}
+  m_CellSize: {x: 150, y: 150}
+  m_Spacing: {x: 200, y: 200}
   m_Constraint: 2
   m_ConstraintCount: 2
 --- !u!114 &171987974
@@ -374,10 +373,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -434,17 +433,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1320020022}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.6}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1041336855}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 105, y: -69}
-  m_SizeDelta: {x: 326, y: 86}
+  m_AnchoredPosition: {x: 147, y: -85}
+  m_SizeDelta: {x: 56.25, y: 31.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1320020024
 MonoBehaviour:
@@ -522,7 +521,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3487f5c4c39a86649b5078345bd7376e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 558d60433ee46ea4e8a9267e67cff8db, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
