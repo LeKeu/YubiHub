@@ -41,6 +41,7 @@ public class BotoesGerais : MonoBehaviour
     public void Mat04() { SceneManager.LoadScene("Mat04"); }
     public void MatMenu03() { SceneManager.LoadScene("MatMenu03"); }
     public void Profs() { SceneManager.LoadScene("ProfasMain"); }
+    public void Sust01() { SceneManager.LoadScene("Sust01"); }
     public void ProfsFechar() { PainelSenha.SetActive(false); }
 
     public void ChecarSenha(TMP_InputField senha)

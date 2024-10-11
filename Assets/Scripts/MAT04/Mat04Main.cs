@@ -27,44 +27,59 @@ public class Mat04Main : MonoBehaviour
     //[SerializeField] Sprite[] Bolas;
     //[SerializeField] List<Sprite> bolasPrefab;
     [SerializeField] GameObject bolaObj;
+    [SerializeField] int maximoBolas = 10;
     Sprite[] Bolas; 
 
     int n1, n2;
 
     int jogador1, jogador2;
 
+    bool continuar;
+
     // Start is called before the first frame update
     void Start()
     {
-        partidas = 0; totalPartidas = 4;
+        partidas = 0; totalPartidas = 10;
         textPartidas.text = $"{partidas+1}/{totalPartidas}";
         Bolas = Resources.LoadAll<Sprite>("Sprites/Bolas");
         StartCoroutine("GerarPergunta");
         jogador1 = 0; jogador2 = 0;
+        continuar = true;
     }
 
     IEnumerator GerarPergunta()
     {
+        DesativarBotoes();
         List<int> numeros = GerarNumeros();
         yield return new WaitForSeconds(1.5f);
+        DesativarBotoes();
         CorBotaoPadrao();
 
         n1 = numeros[0]; n2 = numeros[1];
          
         GerarBolas(n1, lugaresN1);
         GerarBolas(n2, lugaresN2);
-        int oper = Random.Range(0, 2); // 0, mais; 1, menos
-        operacaoImg.GetComponent<Image>().sprite = oper == 0 ? operacoes[0] : operacoes[1];
+        //int oper = Random.Range(0, 2); // 0, mais; 1, menos
+        int oper = 0;
+        //operacaoImg.GetComponent<Image>().sprite = oper == 0 ? operacoes[0] : operacoes[1];
+        operacaoImg.GetComponent<Image>().sprite = operacoes[0];
         int resposta = oper == 0 ? n1 + n2 : n1 - n2;
         Debug.Log(resposta);
         RespostaBotoes(resposta, p1But);
         RespostaBotoes(resposta, p2But, "2");
     }
+    void DesativarBotoes()
+    {
+        foreach(Button but in p1But) { but.enabled = !but.IsActive(); }
+        foreach(Button but in p2But) { but.enabled = !but.IsActive(); }
+    }
 
     List<int> GerarNumeros()
     {
-        n1 = Random.Range(1, 11); n2 = Random.Range(1, 11);
-        while (n2 > n1) { n2 = Random.Range(1, 11); }
+        n1 = Random.Range(1, maximoBolas + 1); 
+        n2 = Random.Range(1, maximoBolas + 1);
+        // descomentar linha abaixo para caso a operação de subtração volte (assim, não tera números negativos no resultado)
+        //while (n2 > n1) { n2 = Random.Range(1, maximoBolas + 1); } 
         return new List<int> { n1, n2 };
     }
 
@@ -91,8 +106,12 @@ public class Mat04Main : MonoBehaviour
                 numNovo = Random.Range(1, num);
             }
         }
-        if (i == 0) { aux = numNovo; }
-        if (i == 1 && numNovo == aux) { numNovo = numNovo + 1 == num ? numNovo + 2 : numNovo + 1; Debug.Log("inguaiss"); }
+
+        if (i == 0) 
+        { aux = numNovo; }
+
+        if (i == 1 && numNovo == aux) 
+        { numNovo = numNovo + 1 == num ? numNovo + 2 : numNovo + 1; Debug.Log("inguaiss"); }
 
         return numNovo;
     }
@@ -101,7 +120,7 @@ public class Mat04Main : MonoBehaviour
     {
         for (int i = 0; i < qntd; i++)
         {
-            var bola = Instantiate(bolaObj, posicoes[i].gameObject.transform.position, Quaternion.identity);
+            var bola = Instantiate(bolaObj, posicoes[i].gameObject.transform.position, Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)));
             bola.transform.SetParent(posicoes[i].transform);
 
             bola.GetComponent<Image>().sprite = Bolas[Random.Range(0, Bolas.Length)];
@@ -119,12 +138,26 @@ public class Mat04Main : MonoBehaviour
     public void ChecarResposta()
     {
         if (EventSystem.current.currentSelectedGameObject.tag == "Certa")   // se for a certa do jogador 1
-        { jogador1++; CorBotaoCertoErrado(EventSystem.current.currentSelectedGameObject, p1: true); textJ1.text = $"Jogador 1: {jogador1}"; }
+        { 
+            jogador1++; CorBotaoCertoErrado(p1: true); 
+            textJ1.text = $"Jogador 1: {jogador1}"; 
+        }
         else if(EventSystem.current.currentSelectedGameObject.tag == "Certa2") 
-        { jogador2++; CorBotaoCertoErrado(EventSystem.current.currentSelectedGameObject, p2: true); textJ2.text = $"Jogador 2: {jogador2}"; }
-        else { Debug.Log("niguem acertou");  }
-        if (ChecarFinalPartida()) { return; }
-        if (JogadorMat02.vidas >= 0) { ApagarBolas(); StartCoroutine("GerarPergunta"); }
+        { 
+            jogador2++; 
+            CorBotaoCertoErrado(p2: true); 
+            textJ2.text = $"Jogador 2: {jogador2}"; 
+        }
+        else 
+        { 
+            CorBotaoCertoErrado(); 
+        }
+
+        if (ChecarFinalPartida()) 
+            return; 
+
+        if (continuar) 
+        { ApagarBolas(); StartCoroutine("GerarPergunta"); }
     }
 
     bool ChecarFinalPartida()
@@ -135,11 +168,12 @@ public class Mat04Main : MonoBehaviour
         if (partidas == totalPartidas)
         {
             GameObject.Find("Final").GetComponent<TextMeshProUGUI>().text = $"{(jogador1 == jogador2? empate : jogador1 > jogador2 ? j1 : j2)}";
+            continuar = false;
             StartCoroutine("SairJogo");
         } return false;
     }
 
-    private void CorBotaoCertoErrado(GameObject butCerto, bool p1 = false, bool p2 = false) // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
+    private void CorBotaoCertoErrado(bool p1 = false, bool p2 = false) // 0 - verde, 1 - vermelho, 2 - padrao (laranja)
     {
         foreach (Button but in p1But)
         {
