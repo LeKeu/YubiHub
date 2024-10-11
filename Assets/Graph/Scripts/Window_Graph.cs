@@ -122,12 +122,12 @@ public class Window_Graph : MonoBehaviour {
         IGraphVisual barChartVisual = new BarChartVisual(graphContainer, Color.white, .8f);
         ShowGraph(pontos, barChartVisual, -1, (int _i) => "" + ($"{pontos[_i]}"), (float _f) => "" + Mathf.RoundToInt(_f), TextObj);
         //($"{_i+1}\n{pontos[_i]}")
-        GameObject.FindGameObjectWithTag("barChartBtn").GetComponent<Button_UI>().ClickFunc = () => {
-            SetGraphVisual(barChartVisual);
-        };
-        GameObject.FindGameObjectWithTag("lineGraphBtn").GetComponent<Button_UI>().ClickFunc = () => {
-            SetGraphVisual(lineGraphVisual);
-        };
+        //GameObject.FindGameObjectWithTag("barChartBtn").GetComponent<Button_UI>().ClickFunc = () => {
+        //    SetGraphVisual(barChartVisual);
+        //};
+        //GameObject.FindGameObjectWithTag("lineGraphBtn").GetComponent<Button_UI>().ClickFunc = () => {
+        //    SetGraphVisual(lineGraphVisual);
+        //};
 
         GameObject.FindGameObjectWithTag("decreaseVisibleAmountBtn").GetComponent<Button_UI>().ClickFunc = () => {
             DecreaseVisibleAmount();
@@ -139,16 +139,16 @@ public class Window_Graph : MonoBehaviour {
 
     public void DesativarBotoes()
     {
-        barChartBtn.SetActive(false);
-        lineGraphBtn.SetActive(false);
+        //barChartBtn.SetActive(false);
+        //lineGraphBtn.SetActive(false);
         decreaseVisibleAmountBtn.SetActive(false);
         increaseVisibleAmountBtn.SetActive(false);
     }
 
     public void AtivarBotoes()
     {
-        barChartBtn.SetActive(true);
-        lineGraphBtn.SetActive(true);
+        //barChartBtn.SetActive(true);
+        //lineGraphBtn.SetActive(true);
         decreaseVisibleAmountBtn.SetActive(true);
         increaseVisibleAmountBtn.SetActive(true);
     }

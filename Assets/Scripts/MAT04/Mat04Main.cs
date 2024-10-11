@@ -61,10 +61,13 @@ public class Mat04Main : MonoBehaviour
         GerarBolas(n2, lugaresN2);
         //int oper = Random.Range(0, 2); // 0, mais; 1, menos
         int oper = 0;
+
+        // descomentar a linha abaixo quando a operação de subtração, pois alterna entre elas
         //operacaoImg.GetComponent<Image>().sprite = oper == 0 ? operacoes[0] : operacoes[1];
         operacaoImg.GetComponent<Image>().sprite = operacoes[0];
+
         int resposta = oper == 0 ? n1 + n2 : n1 - n2;
-        Debug.Log(resposta);
+
         RespostaBotoes(resposta, p1But);
         RespostaBotoes(resposta, p2But, "2");
     }

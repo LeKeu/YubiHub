@@ -22,7 +22,7 @@ public class InfoJogador : MonoBehaviour
     public static List<string> DadosJogador;
     public static List<string> JogadorScores;
     public static List<string> NomesJogos;
-    public static List<string> NomesJogosFake;
+    public static List<string> NomesJogosAux;
     // lista de logos está na classe de logos
 
     private List<string> etcs = new List<string>() {";", ",", ".", "/", "?", "\\", "|", "[", "]", "{", "}" };
@@ -52,11 +52,11 @@ public class InfoJogador : MonoBehaviour
             $"Mat03_0", $"Mat03_1", $"Mat03_2"
         };
 
-        NomesJogosFake = new List<string>()
+        NomesJogosAux = new List<string>()
         {
             $"Jogo 1 - Fácil", $"Jogo 1 - Médio", $"Jogo 1 - Difícil", $"Jogo 1 - IA",
             $"Jogo 2",
-            $"Jogo 3 - Fácil", $"Jogo 2 - Médio", $"Jogo 2 - Difícil"
+            $"Jogo 3 - Fácil", $"Jogo 3 - Médio", $"Jogo 3 - Difícil"
         };
 
         BotoesGerais.nomeJogoGrafico = NomesJogos[0];
@@ -220,14 +220,13 @@ public class InfoJogador : MonoBehaviour
 
         foreach (var jogo in NomesJogos)
         {
-            Debug.Log(jogo);
             var novoBut = Instantiate(
                 botaoJogos,
                 painelScroll.transform.position,
                 Quaternion.identity);
             novoBut.transform.SetParent(painelScroll.transform);
 
-            novoBut.GetComponentInChildren<TextMeshProUGUI>().text = NomesJogosFake[aux];
+            novoBut.GetComponentInChildren<TextMeshProUGUI>().text = NomesJogosAux[aux];
             novoBut.name = jogo;
             aux++;
         }
