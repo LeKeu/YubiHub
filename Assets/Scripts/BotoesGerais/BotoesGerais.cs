@@ -1,28 +1,59 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEditor.VersionControl;
 
 public class BotoesGerais : MonoBehaviour
 {
+    string SENHA;
+
     public static string nomeJogoGrafico;
     public static string nomeJogadorGrafico;
 
     [SerializeField] GameObject PainelSenha;
     [SerializeField] GameObject PainelNormal;
+
     GameObject PainelApagar;
     Window_Graph windowGraph;
 
+    public class ConfigData
+    {
+        public string Senha;
+    }
+
     private void Start()
     {
-        
+        if(SceneManager.GetActiveScene().name == "MenuInicial")
+            ResgatarSenha();
+
+
         if (SceneManager.GetActiveScene().name == "ProfasMain")
             windowGraph = GameObject.FindGameObjectWithTag("WindowGraph").GetComponent<Window_Graph>();
         if (SceneManager.GetActiveScene().name == "MenuJogos")
         { GameObject.Find("nomeJogador").GetComponent<TextMeshProUGUI>().text = $"Olá, {InfoJogador.nomeJogador}!"; }
     }
+
+    void ResgatarSenha()
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "config.json");
+
+        if (File.Exists(path))
+        {
+            string jsonContent = File.ReadAllText(path);
+            ConfigData configSenha = JsonUtility.FromJson<ConfigData>(jsonContent);
+            SENHA = configSenha.Senha.Trim();
+            Debug.Log("SENHA = "+SENHA);
+        }
+        else
+        {
+            Debug.LogError("Arquivo de configuração não encontrado.");
+        }
+    }
+
     public void MatMenu() { SceneManager.LoadScene("MatMenu01"); }
     public void Menu(TextMeshProUGUI nome)
     {
@@ -46,7 +77,17 @@ public class BotoesGerais : MonoBehaviour
 
     public void ChecarSenha(TMP_InputField senha)
     {
-        if (senha.text == "") { SceneManager.LoadScene("ProfasMain"); }
+        if (senha.text.Trim() == SENHA) { SceneManager.LoadScene("ProfasMain"); }
+    }
+
+    public void VisualizarSenha(TMP_InputField senhaInput)
+    {
+        if (senhaInput.contentType == TMP_InputField.ContentType.Password)
+            senhaInput.contentType = TMP_InputField.ContentType.Standard;
+        else
+            senhaInput.contentType = TMP_InputField.ContentType.Password;
+
+        senhaInput.ForceLabelUpdate();
     }
 
     public void FecharPainel(GameObject painel)

@@ -61,3 +61,6 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# Ignorar o arquivo config, que tem a senha
+/Assets/StreamingAssets/config.json
