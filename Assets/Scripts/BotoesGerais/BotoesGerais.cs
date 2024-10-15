@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEditor.VersionControl;
+using System.Collections;
+using UnityEngine.Networking;
 
 public class BotoesGerais : MonoBehaviour
 {
@@ -28,7 +27,7 @@ public class BotoesGerais : MonoBehaviour
     private void Start()
     {
         if(SceneManager.GetActiveScene().name == "MenuInicial")
-            ResgatarSenha();
+            StartCoroutine(ResgatarSenha());
 
 
         if (SceneManager.GetActiveScene().name == "ProfasMain")
@@ -37,21 +36,24 @@ public class BotoesGerais : MonoBehaviour
         { GameObject.Find("nomeJogador").GetComponent<TextMeshProUGUI>().text = $"Olá, {InfoJogador.nomeJogador}!"; }
     }
 
-    void ResgatarSenha()
+    IEnumerator ResgatarSenha()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "config.json");
+        
+        string url = Path.Combine(Application.streamingAssetsPath, "config.json");
 
-        if (File.Exists(path))
+        // Se o arquivo for carregado com sucesso, pegue o conteúdo do arquivo JSON
+        using UnityWebRequest webRequest = UnityWebRequest.Get(url);
         {
-            string jsonContent = File.ReadAllText(path);
-            ConfigData configSenha = JsonUtility.FromJson<ConfigData>(jsonContent);
+            UnityWebRequest www = UnityWebRequest.Get(url);
+            yield return www.SendWebRequest();
+            ConfigData configSenha = JsonUtility.FromJson<ConfigData>(www.downloadHandler.text);
             SENHA = configSenha.Senha.Trim();
-            Debug.Log("SENHA = "+SENHA);
         }
-        else
-        {
-            Debug.LogError("Arquivo de configuração não encontrado.");
-        }
+
+        // Agora processe o JSON
+        //SENHA = configSenha.Senha.Trim();
+        Debug.Log("SENHA = " + SENHA);
+        
     }
 
     public void MatMenu() { SceneManager.LoadScene("MatMenu01"); }
@@ -73,11 +75,25 @@ public class BotoesGerais : MonoBehaviour
     public void MatMenu03() { SceneManager.LoadScene("MatMenu03"); }
     public void Profs() { SceneManager.LoadScene("ProfasMain"); }
     public void Sust01() { SceneManager.LoadScene("Sust01"); }
-    public void ProfsFechar() { PainelSenha.SetActive(false); }
+    public void ProfsFechar(TMP_InputField senhaInput) 
+    { PainelSenha.SetActive(false); senhaInput.text = ""; }
 
     public void ChecarSenha(TMP_InputField senha)
     {
-        if (senha.text.Trim() == SENHA) { SceneManager.LoadScene("ProfasMain"); }
+        if (senha.text.Trim() == SENHA)
+            SceneManager.LoadScene("ProfasMain");
+        else
+        {
+            StartCoroutine(AvisoSenhaErrada());
+        }
+    }
+
+    IEnumerator AvisoSenhaErrada()
+    {
+        TextMeshProUGUI avisoSenha = GameObject.Find("AvisoSenha").GetComponent<TextMeshProUGUI>();
+        avisoSenha.text = "Senha errada!";
+        yield return new WaitForSeconds(3);
+        avisoSenha.text = "";
     }
 
     public void VisualizarSenha(TMP_InputField senhaInput)
